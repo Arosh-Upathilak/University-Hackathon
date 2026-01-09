@@ -1,0 +1,51 @@
+### Variables
+@baseUrl = http://localhost:5056/api
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkMGRkODRkMi05MjgyLTRiNzktOGM0OC1kYzc4N2E2OWQ1YjciLCJlbWFpbCI6InRlc3RAZXhhbXBsZS5jb20iLCJodHRwOi8vc2NoZW1hcy5taWNyb3NvZnQuY29tL3dzLzIwMDgvMDYvaWRlbnRpdHkvY2xhaW1zL3JvbGUiOiJVc2VyIiwiZXhwIjoxNzY3OTAwMDM2LCJpc3MiOiJiYWNrZW5kIiwiYXVkIjoiZnJvbnRlbmQifQ.POu6Qu3XuQGESKcbT1HNpYQ9HI5DEMMzGnpzwyUlzro
+
+### Register User
+POST {{baseUrl}}/User/Register
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "email": "test@example.com",
+  "password": "Test123!"
+}
+
+### Register Admin
+POST {{baseUrl}}/User/Register
+Content-Type: application/json
+
+{
+  "username": "adminuser",
+  "email": "admin@example.com",
+  "password": "Admin123!"
+}
+
+### Login User
+POST {{baseUrl}}/User/Login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "Test123!"
+}
+
+### Login Admin
+POST {{baseUrl}}/User/Login
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "Admin123!"
+}
+
+### Get User Profile (Replace YOUR_JWT_TOKEN_HERE with actual token from login response)
+GET {{baseUrl}}/User/Profile
+Authorization: Bearer {{token}}
+Content-Type: application/json
+
+### Test Profile with actual token (copy token from login response)
+GET {{baseUrl}}/User/Profile
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+Content-Type: application/json
