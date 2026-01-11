@@ -2,19 +2,56 @@
 import AdminCart from "@/components/AdminCart";
 import { UserContext } from "@/context/userContext";
 import Link from "next/link";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import { IoRadio } from "react-icons/io5";
 import { FaPeopleGroup } from "react-icons/fa6";
 import { RiAdminFill } from "react-icons/ri";
 import { GiOlive } from "react-icons/gi";
 import { useRouter } from "next/navigation";
-import { dummyCompetitions } from "@/constant/data";
-
+import axios, { AxiosError } from "axios";
+import { CompetitionProps } from "@/constant/Type";
+import { DateTimeConfig,CompetitionStatus } from '@/helper/DateTimeConversion'
 
 const AdminHome = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { url } = useContext(UserContext);
+  const [competitions, setCompetitions] = useState<CompetitionProps[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const token = localStorage.getItem("token");
+        const result = await axios.get(
+          `${url}/Competition/GetAllCompetitions`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setCompetitions(result.data.competitions || [])
+        setLoading(false)
+      } catch (err: unknown) {
+        const axiosError = err as AxiosError<{
+          message?: string;
+          error?: string;
+        }>;
+
+        const errorMessage =
+          axiosError.response?.data?.error ||
+          axiosError.message ||
+          "Failed to Fetch Competitions.";
+        console.log("Submission failed:", errorMessage);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData()
+  }, []);
+  
   return (
     <div className="p-8">
       <div>
@@ -27,7 +64,12 @@ const AdminHome = () => {
             </p>
           </div>
           <div className=" p-2 rounded-2xl bg-blue-600 text-white hover:bg-blue-800 transition-all duration-150">
-            <button className="flex flex-row items-center gap-2 cursor-pointer" onClick={()=>router.push("/admin/competitions/createcompetition")}>
+            <button
+              className="flex flex-row items-center gap-2 cursor-pointer"
+              onClick={() =>
+                router.push("/admin/competitions/createcompetition")
+              }
+            >
               <FaPlus />
               <p>Create Competiton </p>
             </button>
@@ -88,80 +130,76 @@ const AdminHome = () => {
             </div>
           )}
 
-          {!loading && dummyCompetitions.length > 0 && (
+          {!loading && competitions.length > 0 && (
             <>
-              {dummyCompetitions.map((item) => (
+              {competitions.map((item,index) => (
                 <div
-                  key={item.id}
+                  key={index}
                   className="hidden sm:grid grid-cols-6 text-center border-b border-gray-300 last:border-b-0 p-4 hover:bg-gray-100 "
                 >
-                  <p>{item.name}</p>
+                  <p>{item.competitionName}</p>
                   <p
-                    className={` font-semibold ${
-                      item.status === "Live"
+                    className={` font-semibold ${CompetitionStatus(item.startDateTime,item.endDateTime)=== "Live"
                         ? "text-green-600"
-                        : item.status === "Upcoming"
+                        : CompetitionStatus(item.startDateTime,item.endDateTime) === "Upcoming"
                         ? "text-blue-600"
                         : "text-gray-500"
                     }`}
-                  >
-                    {item.status}
+                  >{CompetitionStatus(item.startDateTime,item.endDateTime)}
                   </p>
-                  <p>{item.registered}</p>
+                  <p>{DateTimeConfig(item.registrationEndDateTime)}</p>
                   <div>
-                    <p>{item.startDate}</p>
-                    <p>6.00.00 p.m.</p>
+                    <p>{DateTimeConfig(item.startDateTime)}</p>
                   </div>
                   <div>
-                    <p>{item.endDate}</p>
-                    <p>6.00.00 p.m.</p>
+                    <p>{DateTimeConfig(item.endDateTime)}</p>
                   </div>
 
                   <p>
-                    <button className="text-blue-600 hover:text-blue-800 cursor-pointer">
-                      View
+                    <button className="text-blue-600 hover:text-blue-800 cursor-pointer" onClick={()=>router.push(`/admin/competitions/showcompetition/${item.competitionId}`)}>
+                      View Details
                     </button>
                   </p>
                 </div>
               ))}
 
               <div className="sm:hidden space-y-4 mt-4 text-center">
-                {dummyCompetitions.map((item) => (
+                {competitions.map((item,index) => (
                   <div
-                    key={item.id}
+                    key={index}
                     className="border rounded-xl p-4 shadow-sm"
                   >
-                    <p className="font-semibold text-lg">{item.name}</p>
+                    <p className="font-semibold text-lg">{item.competitionName}</p>
 
                     <div className="mt-2 text-sm space-y-1">
                       <p>
                         <span className="font-medium">Status:</span>{" "}
                         <span
                           className={
-                            item.status === "Live"
+                            CompetitionStatus(item.startDateTime,item.endDateTime) === "Live"
                               ? "text-green-600"
-                              : item.status === "Upcoming"
+                              : CompetitionStatus(item.startDateTime,item.endDateTime) === "Upcoming"
                               ? "text-blue-600"
                               : "text-gray-500"
                           }
                         >
-                          {item.status}
+                          {CompetitionStatus(item.startDateTime,item.endDateTime)}
                         </span>
                       </p>
                       <p>
                         <span className="font-medium">Registered:</span>{" "}
-                        {item.registered}
+                       {DateTimeConfig(item.registrationEndDateTime)}
                       </p>
                       <p>
                         <span className="font-medium">Start:</span>{" "}
-                        {item.startDate} 6.00.00 p.m.
+                        {DateTimeConfig(item.startDateTime)}
                       </p>
                       <p>
-                        <span className="font-medium">End:</span> {item.endDate} 6.00.00 p.m.
+                        <span className="font-medium">End:</span>{""} {DateTimeConfig(item.endDateTime)}
                       </p>
                     </div>
 
-                    <button className="mt-3 text-blue-600 hover:text-blue-800 cursor-pointer">
+                    <button className="mt-3 text-blue-600 hover:text-blue-800 cursor-pointer" onClick={()=>router.push(`/admin/competitions/showcompetition/${item.competitionId}`)}>
                       View Details
                     </button>
                   </div>
@@ -169,7 +207,7 @@ const AdminHome = () => {
               </div>
             </>
           )}
-          {!loading && dummyCompetitions.length === 0 && (
+          {!loading && competitions.length === 0 && (
             <div className="flex justify-center items-center p-8 text-xl font-bold">
               No competitions yet
             </div>

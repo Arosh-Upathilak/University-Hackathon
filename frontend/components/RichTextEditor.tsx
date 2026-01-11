@@ -39,8 +39,8 @@ const Tiptap = ({ placeholder, value = "", onChange }: RichTextEditorProps) => {
   });
 
   useEffect(() => {
-    if (editor && value === "") {
-      editor.commands.setContent("");
+    if (editor && editor.getHTML() !== value) {
+      editor.commands.setContent(value || "");
     }
   }, [value, editor]);
 
@@ -52,7 +52,7 @@ const Tiptap = ({ placeholder, value = "", onChange }: RichTextEditorProps) => {
         <div className="relative">
           <button
             type="button"
-            className={`p-2 ${
+            className={`p-2 cursor-pointer ${
               editor.isActive("heading") ? "bg-gray-300" : ""
             }`}
           >
@@ -77,7 +77,7 @@ const Tiptap = ({ placeholder, value = "", onChange }: RichTextEditorProps) => {
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBold().run()}
-          className={`p-2 ${editor.isActive("bold") ? "bg-gray-300" : ""}`}
+          className={`p-2 cursor-pointer ${editor.isActive("bold") ? "bg-gray-300" : ""}`}
         >
           <FaBold />
         </button>
@@ -85,7 +85,7 @@ const Tiptap = ({ placeholder, value = "", onChange }: RichTextEditorProps) => {
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleItalic().run()}
-          className={`p-2 ${editor.isActive("italic") ? "bg-gray-300" : ""}`}
+          className={`p-2 cursor-pointer ${editor.isActive("italic") ? "bg-gray-300" : ""}`}
         >
           <FaItalic />
         </button>
@@ -93,7 +93,7 @@ const Tiptap = ({ placeholder, value = "", onChange }: RichTextEditorProps) => {
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleUnderline().run()}
-          className={`p-2 ${
+          className={`p-2 cursor-pointer ${
             editor.isActive("underline") ? "bg-gray-300" : ""
           }`}
         >
@@ -103,7 +103,7 @@ const Tiptap = ({ placeholder, value = "", onChange }: RichTextEditorProps) => {
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className={`p-2 ${
+          className={`p-2 cursor-pointer ${
             editor.isActive("bulletList") ? "bg-gray-300" : ""
           }`}
         >
@@ -113,7 +113,7 @@ const Tiptap = ({ placeholder, value = "", onChange }: RichTextEditorProps) => {
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          className={`p-2 ${
+          className={`p-2 cursor-pointer ${
             editor.isActive("orderedList") ? "bg-gray-300" : ""
           }`}
         >

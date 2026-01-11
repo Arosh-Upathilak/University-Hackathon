@@ -1,16 +1,26 @@
 "use client";
 import BackButton from "@/components/BackButton";
-import React, { useState } from "react";
-import { useParams } from "next/navigation";
+import React, { useContext, useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import RteEditor from "@/components/RichTextEditor";
 import { FaPlus } from "react-icons/fa";
 import TestCase from "@/components/TestCase";
 import CodeEditor from "@/components/CodeEditor";
+import toast from "react-hot-toast";
+import axios, { AxiosError } from "axios";
+import { UserContext } from "@/context/userContext";
+import {  numberToDifficulty } from "@/helper/EnumConvertor";
 
 const AddCodingPage = () => {
   const params = useParams();
-  const competition_id = params.competition_id as string;
+  const competition_id = Array.isArray(params.competition_id)
+    ? params.competition_id[0]
+    : params.competition_id;
   const [nextTestCaseId, setNextTestCaseId] = useState(1);
+  const { url } = useContext(UserContext);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const router = useRouter();
 
   const onChangeHandler = (
     e: React.ChangeEvent<
@@ -22,36 +32,37 @@ const AddCodingPage = () => {
   };
 
   const [formData, setFormData] = useState({
-    chalange_title: "",
-    chalange_difficulty_level: "",
-    chalange_total_point: "",
-    chalange_description: "",
-    chalange_testcases: [
+    Title: "",
+    DifficultyLevel: 0,
+    TotalPoints: "",
+    Description: "",
+    TestCases: [
       {
         id: nextTestCaseId,
-        chalange_testcase_input: "",
-        chalange_testcase_output: "",
-        hidden: false,
+        Input: "",
+        Output: "",
+        IsHidden: false,
       },
     ],
-    chalange_answer_code: "",
+    AnswerLanguage: "",
+    AnswerCode: "",
   });
 
   const removeTestCase = (id: number) => {
     setFormData((prev) => ({
       ...prev,
-      chalange_testcases: prev.chalange_testcases.filter((tc) => tc.id !== id),
+      TestCases: prev.TestCases.filter((tc) => tc.id !== id),
     }));
   };
 
   const updateTestCase = (
     id: number,
-    field: "chalange_testcase_input" | "chalange_testcase_output" | "hidden",
+    field: "Input" | "Output" | "IsHidden",
     value: string | boolean
   ) => {
     setFormData((prev) => ({
       ...prev,
-      chalange_testcases: prev.chalange_testcases.map((tc) =>
+      TestCases: prev.TestCases.map((tc) =>
         tc.id === id ? { ...tc, [field]: value } : tc
       ),
     }));
@@ -60,13 +71,13 @@ const AddCodingPage = () => {
   const addTestCase = () => {
     setFormData((prev) => ({
       ...prev,
-      chalange_testcases: [
-        ...prev.chalange_testcases,
+      TestCases: [
+        ...prev.TestCases,
         {
           id: nextTestCaseId + 1,
-          chalange_testcase_input: "",
-          chalange_testcase_output: "",
-          hidden: false,
+          Input: "",
+          Output: "",
+          IsHidden: false,
         },
       ],
     }));
@@ -76,6 +87,52 @@ const AddCodingPage = () => {
   const onSubmitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log(formData);
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const result = await axios.post(`${url}/CodingProblem/${competition_id}/CreateProblems`, formData,{
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            });
+      if(result.data.success){
+        setLoading(false);
+        toast.success(result.data.message);
+        setFormData({
+          Title: "",
+          DifficultyLevel: 0,
+          TotalPoints: "",
+          Description: "",
+          TestCases: [
+            {
+              id: nextTestCaseId,
+              Input: "",
+              Output: "",
+              IsHidden: false,
+            },
+          ],
+          AnswerLanguage: "",
+          AnswerCode: "",
+        });
+        router.back();
+      }
+    } catch (err: unknown) {
+      const axiosError = err as AxiosError<{
+        message?: string;
+        error?: string;
+      }>;
+
+      const errorMessage =
+        axiosError.response?.data?.error ||
+        axiosError.message ||
+        "Failed to Create Problem.";
+      console.log("Submission failed:", errorMessage);
+      setError(errorMessage);
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
+      setError("");
+    }
   };
 
   return (
@@ -106,9 +163,9 @@ const AddCodingPage = () => {
                   placeholder="e.g. Reverse a Linked Cist (Recursive)"
                   className="bg-[#f2f7fb] p-3 rounded-2xl border border-gray-200 outline-0"
                   required
-                  name="chalange_title"
+                  name="Title"
                   onChange={onChangeHandler}
-                  value={formData.chalange_title}
+                  value={formData.Title}
                 />
               </div>
               <div className="grid grid-cols-2">
@@ -119,17 +176,22 @@ const AddCodingPage = () => {
                   <div className="bg-[#f2f7fb] p-3 rounded-2xl border border-gray-200 ">
                     <select
                       className="flex justify-end items-center w-full outline-0"
-                      onChange={onChangeHandler}
-                      name="chalange_difficulty_level"
-                      value={formData.chalange_difficulty_level}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          DifficultyLevel: Number(e.target.value),
+                        }))
+                      }
+                      name="DifficultyLevel"
+                      value={formData.DifficultyLevel}
                       required
                     >
-                      <option value="" disabled>
+                      <option value={0} disabled>
                         Select Difficalty Level
                       </option>
-                      <option value="easy">Easy</option>
-                      <option value="medium">Medium</option>
-                      <option value="hard">Hard</option>
+                      <option value={1}>Easy</option>
+                      <option value={2}>Medium</option>
+                      <option value={3}>Hard</option>
                     </select>
                   </div>
                 </div>
@@ -141,10 +203,10 @@ const AddCodingPage = () => {
                     placeholder="100"
                     className="bg-[#f2f7fb] p-3 rounded-2xl border border-gray-200 outline-0"
                     required
-                    name="chalange_total_point"
+                    name="TotalPoints"
                     type="number"
                     onChange={onChangeHandler}
-                    value={formData.chalange_total_point}
+                    value={formData.TotalPoints}
                   />
                 </div>
               </div>
@@ -157,15 +219,15 @@ const AddCodingPage = () => {
               <div className="flex flex-col gap-2 p-4">
                 <div className="flex justify-between items-center">
                   <p className="text-gray-500">Complexity</p>
-                  <p>{formData.chalange_difficulty_level}</p>
+                  <p>{formData.DifficultyLevel===0 ? "":numberToDifficulty(formData.DifficultyLevel)}</p>
                 </div>
                 <div className="flex justify-between items-center">
                   <p className="text-gray-500">Points</p>
-                  <p>{formData.chalange_total_point}</p>
+                  <p>{formData.TotalPoints}</p>
                 </div>
                 <div className="flex justify-between items-center">
                   <p className="text-gray-500">Number of Test Case</p>
-                  <p>{formData.chalange_testcases.length}</p>
+                  <p>{formData.TestCases.length}</p>
                 </div>
 
                 <hr className="my-4 h-px bg-gray-300 border-0" />
@@ -173,7 +235,7 @@ const AddCodingPage = () => {
                   type="submit"
                   className="flex flex-row items-center justify-center gap-2 cursor-pointer  p-2 rounded-2xl bg-blue-600 text-white hover:bg-blue-800 transition-all duration-150"
                 >
-                  Create Chalanges
+                  {loading? "Creating....":"Create Chalanges"}
                 </button>
               </div>
             </div>
@@ -189,7 +251,7 @@ const AddCodingPage = () => {
                 </label>
                 <RteEditor
                   placeholder="Enter the Problem description"
-                  value={formData.chalange_description}
+                  value={formData.Description}
                   onChange={(content: string) =>
                     setFormData((prev) => ({
                       ...prev,
@@ -206,7 +268,7 @@ const AddCodingPage = () => {
               </div>
               <div className="flex items-center justify-end mt-2">
                 <button
-                  className="flex items-center p-2 text-blue-600 hover:text-blue-800 transition-all duration-150"
+                  className="flex items-center p-2 cursor-pointer text-blue-600 hover:text-blue-800 transition-all duration-150"
                   type="button"
                   onClick={addTestCase}
                 >
@@ -216,7 +278,7 @@ const AddCodingPage = () => {
               </div>
 
               <div className="px-4 flex flex-col ">
-                {formData.chalange_testcases.map((item, index) => {
+                {formData.TestCases.map((item, index) => {
                   return (
                     <TestCase
                       index={index}
@@ -231,15 +293,24 @@ const AddCodingPage = () => {
             </div>
           </div>
           <div className="mt-4 rounded-2xl p-4 bg-white">
-            <CodeEditor
-              value={formData.chalange_answer_code}
-              onChange={(code) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  chalange_answer_code: code,
-                }))
-              }
-            />
+            <div style={{ scrollMarginTop: '0px' }}>
+              <CodeEditor
+                language={formData.AnswerLanguage || "javascript"}
+                value={formData.AnswerCode}
+                onChange={(code) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    AnswerCode: code,
+                  }))
+                }
+                onLanguageChange={(language) =>
+                  setFormData((prev) => ({
+                    ...prev,
+                    AnswerLanguage: language,
+                  }))
+                }
+              />
+            </div>
           </div>
         </form>
       </div>

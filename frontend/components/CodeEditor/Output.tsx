@@ -47,6 +47,7 @@ const Output = ({
         <button
           onClick={runCode}
           disabled={isLoading}
+          className="cursor-pointer"
         >
           {isLoading ? "Running..." : "Run Code"}
         </button>

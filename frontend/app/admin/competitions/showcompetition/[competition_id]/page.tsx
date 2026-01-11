@@ -1,23 +1,63 @@
 "use client";
 import BackButton from "@/components/BackButton";
 import { dummyCompetitions } from "@/constant/data";
+import { CompetitionProps } from "@/constant/Type";
+import { UserContext } from "@/context/userContext";
+import axios, { AxiosError } from "axios";
 import { useParams, useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FaCode } from "react-icons/fa";
 
 const ShowPage = () => {
   const router = useRouter();
   const params = useParams();
-  const competition_id = params.competition_id as string;
+  const competition_id = Array.isArray(params.competition_id) 
+    ? params.competition_id[0] 
+    : params.competition_id;
   const [loading, setLoading] = useState(false);
+  const { url } = useContext(UserContext);
+  const [competition, setCompetition] = useState<CompetitionProps>();
+
+   useEffect(() => {
+      const fetchData = async () => {
+        try {
+          setLoading(true);
+          const token = localStorage.getItem("token");
+          const result = await axios.get(
+            `${url}/Competition/GetCompetitionById/${competition_id}`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          setCompetition(result.data.competition || "");
+          setLoading(false)
+        } catch (err: unknown) {
+          const axiosError = err as AxiosError<{
+            message?: string;
+            error?: string;
+          }>;
+  
+          const errorMessage =
+            axiosError.response?.data?.error ||
+            axiosError.message ||
+            "Failed to Fetch Competition.";
+          console.log("Submission failed:", errorMessage);
+        } finally {
+          setLoading(false);
+        }
+      };
+      fetchData()
+    }, []);
 
   return (
     <div>
-      <BackButton links="/admin/competitions" text="back to page" />
+      <BackButton links="/admin/competitions" text="back to competition page" />
       <div className="p-8">
         <div className="flex flex-col">
-          <h1 className="text-3xl font-bold">Competition Name </h1>
-          <p className="text-base mt-2 text-gray-400">short Tagline</p>
+          <h1 className="text-3xl font-bold">{competition?.competitionName || 'Loading...'}</h1>
+          <p className="text-base mt-2 text-gray-400">{competition?.competitionTagLine || ''}</p>
         </div>
         <div className="mt-4 bg-white rounded-2xl p-4">
           <div className=" ">

@@ -11,9 +11,9 @@ const TestCase = ({ index,item, removeTestCase, updateTestCase }: TestCaseProps)
           <div className="flex items-center gap-1">
             <input
               type="checkbox"
-              checked={item.hidden}
+              checked={item.IsHidden}
               onChange={(e) =>
-                updateTestCase(item.id, "hidden", e.target.checked)
+                updateTestCase(item.id, "IsHidden", e.target.checked)
               }
             />
             <p>Hidden</p>
@@ -35,9 +35,9 @@ const TestCase = ({ index,item, removeTestCase, updateTestCase }: TestCaseProps)
             required
             placeholder="e.g. [1,2,3,4,5]"
             className="p-2 bg-gray-100/50 rounded-2xl outline-0"
-            value={item.chalange_testcase_input}
+            value={item.Input}
             onChange={(e) =>
-              updateTestCase(item.id, "chalange_testcase_input", e.target.value)
+              updateTestCase(item.id, "Input", e.target.value)
             }
           />
         </div>
@@ -49,9 +49,9 @@ const TestCase = ({ index,item, removeTestCase, updateTestCase }: TestCaseProps)
             required
             placeholder="e.g. [1,2,3,4,5]"
             className="p-2 bg-gray-100/50 rounded-2xl outline-0"
-            value={item.chalange_testcase_output}
+            value={item.Output}
             onChange={(e) =>
-              updateTestCase(item.id, "chalange_testcase_output", e.target.value)
+              updateTestCase(item.id, "Output", e.target.value)
             }
           />
         </div>

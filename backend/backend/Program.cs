@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
+using backend.Repository;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -64,7 +65,8 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-
+builder.Services.AddScoped<ICompetitionRepository,CompetitionRepository>();
+builder.Services.AddScoped<ICodingProblemsRepository,CodingProblemsRepository>();
 
 // Add controllers
 builder.Services.AddAuthorization();

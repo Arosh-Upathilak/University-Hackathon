@@ -6,9 +6,9 @@ import { CODE_SNIPPETS } from "@/constant/data";
 import Output from "./CodeEditor/Output";
 import { CodeEditorProps } from "@/constant/Type";
 
-const CodeEditor = ({ value, onChange }: CodeEditorProps) => {
+const CodeEditor = ({ value, language = "javascript", onChange, onLanguageChange }: CodeEditorProps) => {
   const editorRef = useRef<{ getValue: () => string } | null>(null);
-  const [language, setLanguage] = useState("javascript");
+  const [currentLanguage, setCurrentLanguage] = useState(language);
 
   useEffect(() => {
     if (!value) {
@@ -17,8 +17,8 @@ const CodeEditor = ({ value, onChange }: CodeEditorProps) => {
   }, []);
 
   const onMount = (
-    editor: { getValue: () => string; focus: () => void },
-    monaco: { editor: { defineTheme: (name: string, theme: object) => void; setTheme: (name: string) => void } }
+    editor: any,
+    monaco: any
   ) => {
     editorRef.current = editor;
 
@@ -32,29 +32,40 @@ const CodeEditor = ({ value, onChange }: CodeEditorProps) => {
     });
 
     monaco.editor.setTheme("customLight");
-    editor.focus();
+    
+    setTimeout(() => {
+      editor.setPosition({ lineNumber: 1, column: 1 });
+      editor.revealLine(1);
+    }, 100);
   };
 
   const onSelect = (lang: string) => {
-    setLanguage(lang);
+    setCurrentLanguage(lang);
     onChange(CODE_SNIPPETS[lang as keyof typeof CODE_SNIPPETS]);
+    if (onLanguageChange) {
+      onLanguageChange(lang);
+    }
   };
 
   return (
     <div className="bg-white">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <LanguageSelector language={language} onSelect={onSelect} />
+          <LanguageSelector language={currentLanguage} onSelect={onSelect} />
 
           <div className="border border-gray-200 rounded-2xl overflow-hidden bg-[#f2f7fb]">
             <div className="p-2">
               <Editor
                 height="72vh"
-                language={language}
+                language={currentLanguage}
                 value={value}
                 onMount={onMount}
                 onChange={(val) => onChange(val ?? "")}
-                options={{ minimap: { enabled: false } }}
+                options={{ 
+                  minimap: { enabled: false },
+                  scrollBeyondLastLine: false,
+                  automaticLayout: true
+                }}
               />
             </div>
           </div>
@@ -62,7 +73,7 @@ const CodeEditor = ({ value, onChange }: CodeEditorProps) => {
 
         <Output
           editorRef={editorRef as { current: { getValue: () => string } }}
-          language={language}
+          language={currentLanguage}
         />
       </div>
     </div>

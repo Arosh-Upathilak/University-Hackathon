@@ -80,18 +80,25 @@ export type TestCaseItemProps = {
   hidden: boolean;
 };
 
+export enum ChallengeDifficultyLevel {
+  Easy = "Easy",
+  Medium = "Medium",
+  Hard = "Hard",
+}
+
+
 export type TestCaseProps = {
   index: number;
   item: {
     id: number;
-    chalange_testcase_input: string;
-    chalange_testcase_output: string;
-    hidden: boolean;
+    Input: string;
+    Output: string;
+    IsHidden: boolean;
   };
   removeTestCase: (id: number) => void;
   updateTestCase: (
     id: number,
-    field: "chalange_testcase_input" | "chalange_testcase_output" | "hidden",
+    field: "Input" | "Output" | "IsHidden",
     value: string | boolean
   ) => void;
 };
@@ -105,5 +112,48 @@ export type LanguageSelectorProps = {
 
 export type CodeEditorProps = {
   value: string;
+  language?: string;
   onChange: (value: string) => void;
+  onLanguageChange?: (language: string) => void;
 };
+
+export interface PopUpMessageProps {
+  onClose: () => void;
+  deleteCompetitionId: number;
+}
+
+
+export interface CompetitionProps {
+  competitionId: number;
+  createdByUserId: string;
+  competitionName: string;
+  competitionTagLine: string;
+  competitionDescription: string;
+  competitionImageLink: string;
+
+  startDateTime: string;
+  endDateTime: string;
+  registrationEndDateTime: string;
+
+  isVisibleForStudents: boolean;
+  numberOfQuestions: number;
+
+  rules: string;
+  createdAt: string;
+
+  problems?: CompetitionProblem[];
+  registrations? : CompetitionRegistration[];
+}
+
+export interface CompetitionRegistration {
+  competitionRegistrationId: number;
+  studentId: string;
+  registeredAt: string;
+}
+
+export interface CompetitionProblem {
+  competitionProblemId: number;
+  title: string;
+  difficultyLevel: string;
+  totalPoints: number;
+}

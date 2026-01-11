@@ -6,9 +6,45 @@ namespace backend.Data
 {
     public class AppDbContext : IdentityDbContext<User>
     {
-        public AppDbContext(DbContextOptions<AppDbContext>  options) : base(options)
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
-            
+
         }
+        public DbSet<Competition> Competitions { get; set; }
+        public DbSet<CompetitionProblem> CompetitionProblems { get; set; }
+        public DbSet<QuestionCodeSubmission> QuestionSubmitions { get; set; }
+        public DbSet<TestCase> TestCases { get; set; }
+        public DbSet<CompetitionRegistration> CompetitionRegistrations { get; set; }
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            base.OnModelCreating(builder);
+
+            builder.Entity<Competition>()
+                .HasOne(c => c.CreatedByUser)
+                .WithMany()
+                .HasForeignKey(c => c.CreatedByUserId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<CompetitionProblem>()
+                .HasOne(p => p.Competition)
+                .WithMany(c => c.Problems)
+                .HasForeignKey(p => p.CompetitionId);
+
+            builder.Entity<TestCase>()
+                .HasOne(t => t.CompetitionProblem)
+                .WithMany(p => p.TestCases)
+                .HasForeignKey(t => t.CompetitionProblemId);
+
+            builder.Entity<QuestionCodeSubmission>()
+                .HasOne(s => s.Student)
+                .WithMany()
+                .HasForeignKey(s => s.StudentId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<CompetitionRegistration>()
+                .HasIndex(r => new { r.StudentId, r.CompetitionId })
+                .IsUnique();
+        }
+
     }
 }

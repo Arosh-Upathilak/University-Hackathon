@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { FaUpload } from "react-icons/fa6";
 import { CiImageOn } from "react-icons/ci";
 import { IoTrashBin } from "react-icons/io5";
@@ -7,41 +7,96 @@ import RteEditor from "@/components/RichTextEditor";
 import Image from "next/image";
 import { uploadFileToCloudinary } from "@/helper/UploadFileToCloudinary";
 import toast from "react-hot-toast";
-import { AxiosError } from "axios";
+import axios, { AxiosError } from "axios";
 import { useParams, useRouter } from "next/navigation";
+import { UserContext } from "@/context/userContext";
 
 const Updatecompetiotion = () => {
+  const params = useParams();
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [formData, setFormData] = useState({
-    competition_name: "",
-    competition_tag_line: "",
-    competition_description: "",
-    competition_image_link: "",
-    competition_start_date_time: "",
-    competition_end_date_time: "",
-    competition_regiserend_date_time: "",
-    competition_visiabilty_for_student: false,
-    competition_rules: "",
+    competitionName: "",
+    competitionTagLine: "",
+    competitionDescription: "",
+    competitionImageLink: "",
+    startDateTime: "",
+    endDateTime: "",
+    registrationEndDateTime: "",
+    isVisibleForStudents: false,
+    rules: "",
   });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const preview = selectedImage ? URL.createObjectURL(selectedImage) : null;
+  const preview = selectedImage
+    ? URL.createObjectURL(selectedImage)
+    : formData.competitionImageLink;
   const router = useRouter();
-  const params = useParams();
-  
-  const competition_id = params.competition_id as string;
+  const competition_id = Array.isArray(params.competition_id)
+    ? params.competition_id[0]
+    : params.competition_id;
+  const { url } = useContext(UserContext);
 
   useEffect(() => {
-    return () => {
-      if (preview) URL.revokeObjectURL(preview);
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const token = localStorage.getItem("token");
+        const result = await axios.get(
+          `${url}/Competition/GetCompetitionById/${competition_id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const competition = result.data.competition || "";
+        console.log("Competition:", competition);
+        setFormData({
+          competitionName: competition.competitionName || "",
+          competitionTagLine: competition.competitionTagLine || "",
+          competitionDescription: competition.competitionDescription || "",
+          competitionImageLink: competition.competitionImageLink || "",
+          startDateTime: competition.startDateTime || "",
+          endDateTime: competition.endDateTime || "",
+          registrationEndDateTime: competition.registrationEndDateTime || "",
+          isVisibleForStudents: competition.isVisibleForStudents || false,
+          rules: competition.rules || "",
+        });
+        setLoading(false);
+      } catch (err: unknown) {
+        const axiosError = err as AxiosError<{
+          message?: string;
+          error?: string;
+        }>;
+
+        const errorMessage =
+          axiosError.response?.data?.error ||
+          axiosError.message ||
+          "Failed to Fetch Competition.";
+        console.log("Submission failed:", errorMessage);
+        setError(errorMessage);
+      } finally {
+        setLoading(false);
+        setError("");
+      }
     };
-  }, [preview]);
+    fetchData();
+  }, []);
 
   const onChangeHandler = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const { name, type } = e.target;
+
+    const value =
+      type === "checkbox"
+        ? (e.target as HTMLInputElement).checked
+        : e.target.value;
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const onSubmitHandler = async (e: React.FormEvent) => {
@@ -57,32 +112,49 @@ const Updatecompetiotion = () => {
 
       const payload = {
         ...formData,
-        competition_image_link: imageUrl,
+        competitionImageLink: imageUrl || formData.competitionImageLink,
       };
 
-      setFormData({
-        competition_name: "",
-        competition_tag_line: "",
-        competition_description: "",
-        competition_image_link: "",
-        competition_start_date_time: "",
-        competition_end_date_time: "",
-        competition_regiserend_date_time: "",
-        competition_visiabilty_for_student: false,
-        competition_rules: "",
-      });
-      setSelectedImage(null);
-      toast.success("Image upload success");
-      setLoading(false);
-      console.log("FINAL PAYLOAD:", payload);
+      const token = localStorage.getItem("token");
+      const response = await axios.put(
+        `${url}/Competition/UpdateCompetition/${competition_id}`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (response.data.success) {
+        setFormData({
+          competitionName: "",
+          competitionTagLine: "",
+          competitionDescription: "",
+          competitionImageLink: "",
+          startDateTime: "",
+          endDateTime: "",
+          registrationEndDateTime: "",
+          isVisibleForStudents: false,
+          rules: "",
+        });
+        setSelectedImage(null);
+        toast.success(response.data.message);
+        router.push("/admin/competitions");
+        setLoading(false);
+        console.log("FINAL PAYLOAD:", payload);
+      }
     } catch (err: unknown) {
       const axiosError = err as AxiosError<{
         message?: string;
         error?: string;
       }>;
 
-      console.log("Submission failed:", error);
-      toast.error("Submission failed");
+      const errorMessage =
+        axiosError.response?.data?.error ||
+        axiosError.message ||
+        "Failed to Update Competition.";
+      toast.error(errorMessage);
+      console.log("Submission failed:", errorMessage);
     } finally {
       setLoading(false);
     }
@@ -116,8 +188,8 @@ const Updatecompetiotion = () => {
                   className="bg-[#f2f7fb] p-3 rounded-2xl border border-gray-200 outline-0"
                   onChange={onChangeHandler}
                   required
-                  value={formData.competition_name}
-                  name="competition_name"
+                  value={formData.competitionName}
+                  name="competitionName"
                 />
               </div>
 
@@ -127,8 +199,8 @@ const Updatecompetiotion = () => {
                   placeholder="e.g. Innovate for a better future"
                   className="bg-[#f2f7fb] p-3 rounded-2xl border border-gray-200 outline-0"
                   onChange={onChangeHandler}
-                  value={formData.competition_tag_line}
-                  name="competition_tag_line"
+                  value={formData.competitionTagLine}
+                  name="competitionTagLine"
                 />
                 <p className="text-sm text-gray-400">
                   A brief catcy pharse shown on the card.
@@ -141,24 +213,25 @@ const Updatecompetiotion = () => {
                     Description <span className="text-red-600">*</span>
                   </label>
                   <textarea
-                    value={formData.competition_description}
+                    value={formData.competitionDescription}
                     onChange={onChangeHandler}
                     placeholder="Describe the rules, goals, and details of the hackathon..."
                     className="bg-[#f2f7fb] p-3 rounded-2xl border border-gray-200 outline-0 min-h-32"
                     rows={3}
                     required
-                    name="competition_description"
+                    name="competitionDescription"
                   />
                 </div>
                 <div className="flex items-center justify-start gap-4">
-                  <label>
-                    Visiable for Students
-                  </label>
-                  <input type="checkbox" className="w-3 h-3" onChange={onChangeHandler} 
-                  name="competition_visiabilty_for_student"
-                  checked={formData.competition_visiabilty_for_student}/>
+                  <label>Visiable for Students</label>
+                  <input
+                    type="checkbox"
+                    className="w-4 h-4"
+                    onChange={onChangeHandler}
+                    name="isVisibleForStudents"
+                    checked={formData.isVisibleForStudents}
+                  />
                 </div>
-  
               </div>
             </div>
           </div>
@@ -176,7 +249,7 @@ const Updatecompetiotion = () => {
                     accept="image/*"
                     className="hidden"
                     id="imageUpload"
-                    required
+                    required={!formData.competitionImageLink}
                     onChange={(e) =>
                       setSelectedImage(e.target.files?.[0] || null)
                     }
@@ -207,8 +280,11 @@ const Updatecompetiotion = () => {
 
                       <button
                         type="button"
-                        onClick={() => setSelectedImage(null)}
-                        className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 rounded-2xl text-white"
+                        onClick={() => {
+                          setSelectedImage(null);
+                          setFormData(prev => ({ ...prev, competitionImageLink: "" }));
+                        }}
+                        className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 rounded-2xl text-white cursor-pointer"
                       >
                         <IoTrashBin />
                         Remove Image
@@ -232,8 +308,8 @@ const Updatecompetiotion = () => {
                     type="datetime-local"
                     className="bg-[#f2f7fb] rounded-2xl border border-gray-200 outline-0 p-2"
                     onChange={onChangeHandler}
-                    value={formData.competition_start_date_time}
-                    name="competition_start_date_time"
+                    value={formData.startDateTime}
+                    name="startDateTime"
                     required
                   />
                 </div>
@@ -245,8 +321,8 @@ const Updatecompetiotion = () => {
                     type="datetime-local"
                     className="bg-[#f2f7fb] rounded-2xl border border-gray-200 outline-0 p-2"
                     onChange={onChangeHandler}
-                    value={formData.competition_end_date_time}
-                    name="competition_end_date_time"
+                    value={formData.endDateTime}
+                    name="endDateTime"
                     required
                   />
                 </div>
@@ -259,8 +335,8 @@ const Updatecompetiotion = () => {
                     type="datetime-local"
                     className="bg-[#f2f7fb] rounded-2xl border border-gray-200 outline-0 p-2"
                     onChange={onChangeHandler}
-                    value={formData.competition_regiserend_date_time}
-                    name="competition_regiserend_date_time"
+                    value={formData.registrationEndDateTime}
+                    name="registrationEndDateTime"
                     required
                   />
                 </div>
@@ -279,11 +355,11 @@ const Updatecompetiotion = () => {
             </label>
             <RteEditor
               placeholder="Enter the Rules and Regulations"
-              value={formData.competition_rules}
+              value={formData.rules}
               onChange={(content: string) =>
                 setFormData((prev) => ({
                   ...prev,
-                  competition_rules: content,
+                  rules: content,
                 }))
               }
             />
