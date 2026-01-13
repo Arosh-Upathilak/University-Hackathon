@@ -1,14 +1,14 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.EntityFrameworkCore;
 
 namespace backend.Models
 {
+    [PrimaryKey(nameof(CompetitionId), nameof(CompetitionProblemId))]
     public class CompetitionProblem
     {
-        public int CompetitionProblemId { get; set; }
-
-        [Required]
         public int CompetitionId { get; set; }
-        public Competition Competition { get; set; } = null!;
+        public int CompetitionProblemId { get; set; }
 
         public string Title { get; set; } = string.Empty;
         public ChallengeDifficultyLevel DifficultyLevel { get; set; }

@@ -7,8 +7,6 @@ namespace backend.Models
         public int QuestionCodeSubmissionId { get; set; }
         [Required]
         public string StudentId { get; set; } = string.Empty;
-        public User Student { get; set; } = null!;
-
         [Required]
         public int CompetitionProblemId { get; set; }
         public CompetitionProblem CompetitionProblem { get; set; } = null!;

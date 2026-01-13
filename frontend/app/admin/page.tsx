@@ -76,33 +76,6 @@ const AdminHome = () => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-5 mt-6">
-          <AdminCart
-            headerText="Total Hackathons"
-            Icon={IoRadio}
-            IconStyle="bg-green-200 text-green-600"
-            count="123"
-          />
-          <AdminCart
-            headerText="Live Hackathon"
-            Icon={GiOlive}
-            IconStyle="bg-orange-200 text-orange-600"
-            count="123"
-          />
-          <AdminCart
-            headerText="Total Students"
-            Icon={FaPeopleGroup}
-            IconStyle="bg-blue-200 text-blue-600"
-            count="123"
-          />
-          <AdminCart
-            headerText="Total Mentors"
-            Icon={RiAdminFill}
-            IconStyle="bg-purple-200 text-purple-600"
-            count="123"
-          />
-        </div>
-
         <div className="p-4 rounded-3xl bg-white mt-8">
           <div className="flex items-center justify-between flex-col sm:flex-row">
             <h1 className="text-2xl text-blue-800 font-bold">

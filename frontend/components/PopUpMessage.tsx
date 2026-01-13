@@ -7,27 +7,32 @@ import React, { useContext, useState } from "react";
 import toast from "react-hot-toast";
 
 
-const PopUpMessage = ({ onClose, deleteCompetitionId }: PopUpMessageProps) => {
+const PopUpMessage = ({ onClose, deleteCompetitionId, onConfirm }: PopUpMessageProps) => {
   const { url } = useContext(UserContext);
-  const [loading,setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const onDeleteHandel = async () => {
-    try{
-        setLoading(true)
-        const token = localStorage.getItem("token");
-        const response = await axios.delete(`${url}/Competition/DeleteCompetition/${deleteCompetitionId}`, {
-            headers: {
-                'Authorization': `Bearer ${token}`
-            }
-        });
-        if(response.data.success){
-            onClose();
-            setLoading(false)
-            toast.success(response.data.message);
-            window.location.reload();
+    if (onConfirm) {
+      onConfirm();
+      return;
+    }
+    
+    try {
+      setLoading(true);
+      const token = localStorage.getItem("token");
+      const response = await axios.delete(`${url}/Competition/DeleteCompetition/${deleteCompetitionId}`, {
+        headers: {
+          'Authorization': `Bearer ${token}`
         }
-    }catch (error: unknown) {
+      });
+      if (response.data.success) {
+        onClose();
+        setLoading(false);
+        toast.success(response.data.message);
+        window.location.reload();
+      }
+    } catch (error: unknown) {
       const axiosError = error as AxiosError<{
         message?: string;
         error?: string;
@@ -54,13 +59,13 @@ const PopUpMessage = ({ onClose, deleteCompetitionId }: PopUpMessageProps) => {
         <div className="flex gap-2 justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+            className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 cursor-pointer"
           >
             Cancel
           </button>
           <button
             onClick={onDeleteHandel}
-            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 cursor-pointer"
           >
             {loading ? "Deleting..." : "Delete"}
           </button>

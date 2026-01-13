@@ -1,148 +1,3 @@
-export const dummyCompetitions = [
-  {
-    id: 1,
-    name: "Hackathon 2026",
-    header: "Global coding challenge",
-    image: "https://images.unsplash.com/photo-1518770660439-4636190af475",
-    status: "Live",
-    registered: 120,
-    numberOfQuestion: 15,
-    startDate: "2026-01-10",
-    endDate: "2026-01-12",
-    startDateTime: "2026-01-10T09:00",
-    endDateTime: "2026-01-12T18:00",
-    creators: "Admin Team",
-  },
-  {
-    id: 2,
-    name: "AI Challenge",
-    header: "Build intelligent systems",
-    image: "https://images.unsplash.com/photo-1555949963-aa79dcee981c",
-    status: "Upcoming",
-    registered: 85,
-    numberOfQuestion: 0,
-    startDate: "2026-02-01",
-    endDate: "2026-02-03",
-    startDateTime: "2026-02-01T10:00",
-    endDateTime: "2026-02-03T17:00",
-    creators: "Open Research",
-  },
-  {
-    id: 3,
-    name: "Web Dev Sprint",
-    header: "Frontend & Backend mastery",
-    image: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d",
-    status: "Completed",
-    registered: 200,
-    numberOfQuestion: 40,
-    startDate: "2025-12-10",
-    endDate: "2025-12-12",
-    startDateTime: "2025-12-10T09:30",
-    endDateTime: "2025-12-12T16:00",
-    creators: "Web Community",
-  },
-  {
-    id: 4,
-    name: "Cloud Computing Hack",
-    header: "Scale apps on cloud",
-    image: "https://images.unsplash.com/photo-1519389950473-47ba0277781c",
-    status: "Live",
-    registered: 142,
-    numberOfQuestion: 22,
-    startDate: "2026-01-15",
-    endDate: "2026-01-18",
-    startDateTime: "2026-01-15T08:00",
-    endDateTime: "2026-01-18T18:00",
-    creators: "Cloud Alliance",
-  },
-  {
-    id: 5,
-    name: "Cyber Security War",
-    header: "Defend the systems",
-    image: "https://images.unsplash.com/photo-1510511459019-5dda7724fd87",
-    status: "Upcoming",
-    registered: 64,
-    numberOfQuestion: 0,
-    startDate: "2026-03-05",
-    endDate: "2026-03-07",
-    startDateTime: "2026-03-05T10:00",
-    endDateTime: "2026-03-07T17:00",
-    creators: "Security Council",
-  },
-  {
-    id: 6,
-    name: "Mobile App Jam",
-    header: "Create powerful mobile apps",
-    image: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f",
-    status: "Completed",
-    registered: 180,
-    numberOfQuestion: 35,
-    startDate: "2025-11-01",
-    endDate: "2025-11-03",
-    startDateTime: "2025-11-01T09:00",
-    endDateTime: "2025-11-03T16:00",
-    creators: "Mobile Dev Group",
-  },
-  {
-    id: 7,
-    name: "Blockchain Build",
-    header: "Decentralized future",
-    image: "https://images.unsplash.com/photo-1518779578993-ec3579fee39f",
-    status: "Live",
-    registered: 96,
-    numberOfQuestion: 12,
-    startDate: "2026-01-20",
-    endDate: "2026-01-22",
-    startDateTime: "2026-01-20T09:00",
-    endDateTime: "2026-01-22T18:00",
-    creators: "Crypto Labs",
-  },
-  {
-    id: 8,
-    name: "Data Science Quest",
-    header: "Analyze and predict",
-    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71",
-    status: "Upcoming",
-    registered: 73,
-    numberOfQuestion: 0,
-    startDate: "2026-02-10",
-    endDate: "2026-02-12",
-    startDateTime: "2026-02-10T10:00",
-    endDateTime: "2026-02-12T17:00",
-    creators: "Data Society",
-  },
-  {
-    id: 9,
-    name: "Game Dev Arena",
-    header: "Design & develop games",
-    image: "https://images.unsplash.com/photo-1511512578047-dfb367046420",
-    status: "Completed",
-    registered: 210,
-    numberOfQuestion: 48,
-    startDate: "2025-10-15",
-    endDate: "2025-10-17",
-    startDateTime: "2025-10-15T09:00",
-    endDateTime: "2025-10-17T18:00",
-    creators: "Game Studio Hub",
-  },
-  {
-    id: 10,
-    name: "DevOps Marathon",
-    header: "Automate everything",
-    image: "https://images.unsplash.com/photo-1526378722484-cc5c5102c0b9",
-    status: "Live",
-    registered: 130,
-    numberOfQuestion: 20,
-    startDate: "2026-01-25",
-    endDate: "2026-01-27",
-    startDateTime: "2026-01-25T08:30",
-    endDateTime: "2026-01-27T17:30",
-    creators: "DevOps Guild",
-  },
-];
-
-
-
 export const LANGUAGE_VERSIONS = {
   javascript: "18.15.0",
   typescript: "5.0.3",
@@ -161,3 +16,156 @@ export const CODE_SNIPPETS = {
     'using System;\n\nnamespace HelloWorld\n{\n\tclass Hello { \n\t\tstatic void Main(string[] args) {\n\t\t\tConsole.WriteLine("Hello World in C#");\n\t\t}\n\t}\n}\n',
   php: "<?php\n\n$name = 'Alex';\necho $name;\n",
 };
+
+
+export const studentsDummy = [
+  {
+    "competitionRegistrationId": 1,
+    "studentId": "STU001",
+    "studentName": "John Doe",
+    "competitionId": 101,
+    "registeredAt": "2025-12-20T10:00:00Z"
+  },
+  {
+    "competitionRegistrationId": 2,
+    "studentId": "STU001",
+    "studentName": "John Doe",
+    "competitionId": 102,
+    "registeredAt": "2025-12-21T11:00:00Z"
+  },
+
+  {
+    "competitionRegistrationId": 3,
+    "studentId": "STU002",
+    "studentName": "Jane Smith",
+    "competitionId": 101,
+    "registeredAt": "2025-12-20T10:30:00Z"
+  },
+  {
+    "competitionRegistrationId": 4,
+    "studentId": "STU002",
+    "studentName": "Jane Smith",
+    "competitionId": 103,
+    "registeredAt": "2025-12-22T09:45:00Z"
+  },
+
+  {
+    "competitionRegistrationId": 5,
+    "studentId": "STU003",
+    "studentName": "Alex Johnson",
+    "competitionId": 102,
+    "registeredAt": "2025-12-21T12:15:00Z"
+  },
+  {
+    "competitionRegistrationId": 6,
+    "studentId": "STU003",
+    "studentName": "Alex Johnson",
+    "competitionId": 104,
+    "registeredAt": "2025-12-23T08:30:00Z"
+  },
+
+  {
+    "competitionRegistrationId": 7,
+    "studentId": "STU004",
+    "studentName": "Emily Brown",
+    "competitionId": 101,
+    "registeredAt": "2025-12-20T13:00:00Z"
+  },
+  {
+    "competitionRegistrationId": 8,
+    "studentId": "STU004",
+    "studentName": "Emily Brown",
+    "competitionId": 105,
+    "registeredAt": "2025-12-24T14:00:00Z"
+  },
+
+  {
+    "competitionRegistrationId": 9,
+    "studentId": "STU005",
+    "studentName": "Michael Lee",
+    "competitionId": 103,
+    "registeredAt": "2025-12-22T15:20:00Z"
+  },
+  {
+    "competitionRegistrationId": 10,
+    "studentId": "STU005",
+    "studentName": "Michael Lee",
+    "competitionId": 104,
+    "registeredAt": "2025-12-23T16:10:00Z"
+  },
+
+  {
+    "competitionRegistrationId": 11,
+    "studentId": "STU006",
+    "studentName": "Sophia Wilson",
+    "competitionId": 101,
+    "registeredAt": "2025-12-20T09:10:00Z"
+  },
+  {
+    "competitionRegistrationId": 12,
+    "studentId": "STU006",
+    "studentName": "Sophia Wilson",
+    "competitionId": 102,
+    "registeredAt": "2025-12-21T10:40:00Z"
+  },
+
+  {
+    "competitionRegistrationId": 13,
+    "studentId": "STU007",
+    "studentName": "Daniel Martinez",
+    "competitionId": 105,
+    "registeredAt": "2025-12-24T11:25:00Z"
+  },
+  {
+    "competitionRegistrationId": 14,
+    "studentId": "STU007",
+    "studentName": "Daniel Martinez",
+    "competitionId": 103,
+    "registeredAt": "2025-12-22T12:50:00Z"
+  },
+
+  {
+    "competitionRegistrationId": 15,
+    "studentId": "STU008",
+    "studentName": "Olivia Taylor",
+    "competitionId": 104,
+    "registeredAt": "2025-12-23T14:35:00Z"
+  },
+  {
+    "competitionRegistrationId": 16,
+    "studentId": "STU008",
+    "studentName": "Olivia Taylor",
+    "competitionId": 102,
+    "registeredAt": "2025-12-21T15:55:00Z"
+  },
+
+  {
+    "competitionRegistrationId": 17,
+    "studentId": "STU009",
+    "studentName": "William Anderson",
+    "competitionId": 101,
+    "registeredAt": "2025-12-20T16:20:00Z"
+  },
+  {
+    "competitionRegistrationId": 18,
+    "studentId": "STU009",
+    "studentName": "William Anderson",
+    "competitionId": 105,
+    "registeredAt": "2025-12-24T17:10:00Z"
+  },
+
+  {
+    "competitionRegistrationId": 19,
+    "studentId": "STU010",
+    "studentName": "Emma Thomas",
+    "competitionId": 103,
+    "registeredAt": "2025-12-22T18:00:00Z"
+  },
+  {
+    "competitionRegistrationId": 20,
+    "studentId": "STU010",
+    "studentName": "Emma Thomas",
+    "competitionId": 104,
+    "registeredAt": "2025-12-23T19:30:00Z"
+  }
+]

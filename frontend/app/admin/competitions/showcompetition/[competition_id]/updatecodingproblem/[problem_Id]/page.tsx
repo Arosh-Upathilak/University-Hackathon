@@ -1,6 +1,6 @@
 "use client";
 import BackButton from "@/components/BackButton";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import RteEditor from "@/components/RichTextEditor";
 import { FaPlus } from "react-icons/fa";
@@ -9,13 +9,16 @@ import CodeEditor from "@/components/CodeEditor";
 import toast from "react-hot-toast";
 import axios, { AxiosError } from "axios";
 import { UserContext } from "@/context/userContext";
-import {  numberToDifficulty } from "@/helper/EnumConvertor";
+import { numberToDifficulty } from "@/helper/EnumConvertor";
 
-const AddCodingPage = () => {
+const UpdateCodingProblem = () => {
   const params = useParams();
   const competition_id = Array.isArray(params.competition_id)
     ? params.competition_id[0]
     : params.competition_id;
+  const problem_Id = Array.isArray(params.problem_Id)
+    ? params.problem_Id[1]
+    : params.problem_Id;
   const [nextTestCaseId, setNextTestCaseId] = useState(1);
   const { url } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
@@ -47,6 +50,62 @@ const AddCodingPage = () => {
     AnswerLanguage: "javascript",
     AnswerCode: "",
   });
+
+  useEffect(() => {
+    const fetchDetails = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        const response = await axios.get(
+          `${url}/CodingProblem/${competition_id}/GetProblems/${problem_Id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const problems = response.data;
+        console.log(problems);
+
+        setFormData({
+          Title: problems.title || "",
+          DifficultyLevel: problems.difficultyLevel || 0,
+          TotalPoints: problems.totalPoints || "",
+          Description: problems.description || "",
+          TestCases:
+            problems.testCases?.map(
+              (
+                tc: { input: string; output: string; isHidden: boolean },
+                index: number
+              ) => ({
+                id: index + 1,
+                Input: tc.input || "",
+                Output: tc.output || "",
+                IsHidden: tc.isHidden || false,
+              })
+            ) || [],
+          AnswerLanguage: problems.answerLanguage || "javascript",
+          AnswerCode: problems.answerCode || "",
+        });
+      } catch (err: unknown) {
+        const axiosError = err as AxiosError<{
+          message?: string;
+          error?: string;
+        }>;
+
+        const errorMessage =
+          axiosError.response?.data?.error ||
+          axiosError.message ||
+          "Failed to Create Problem.";
+        console.log("Submission failed:", errorMessage);
+        setError(errorMessage);
+        toast.error(errorMessage);
+      } finally {
+        setLoading(false);
+        setError("");
+      }
+    };
+    fetchDetails();
+  }, []);
 
   const removeTestCase = (id: number) => {
     setFormData((prev) => ({
@@ -90,12 +149,16 @@ const AddCodingPage = () => {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const result = await axios.post(`${url}/CodingProblem/${competition_id}/CreateProblems`, formData,{
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-            });
-      if(result.data.success){
+      const result = await axios.put(
+        `${url}/CodingProblem/${competition_id}/UpdateProblem/${problem_Id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (result.data.success) {
         setLoading(false);
         toast.success(result.data.message);
         setFormData({
@@ -143,7 +206,7 @@ const AddCodingPage = () => {
       />
       <div className="p-8">
         <div>
-          <h1 className="text-3xl font-bold">Create Coding Challenge</h1>
+          <h1 className="text-3xl font-bold">Updating Coding Challenge</h1>
           <p>
             Design a new technical problem for the university hackathon. Define
             rules, languages. and test cases.
@@ -219,7 +282,11 @@ const AddCodingPage = () => {
               <div className="flex flex-col gap-2 p-4">
                 <div className="flex justify-between items-center">
                   <p className="text-gray-500">Complexity</p>
-                  <p>{formData.DifficultyLevel===0 ? "":numberToDifficulty(formData.DifficultyLevel)}</p>
+                  <p>
+                    {formData.DifficultyLevel === 0
+                      ? ""
+                      : numberToDifficulty(formData.DifficultyLevel)}
+                  </p>
                 </div>
                 <div className="flex justify-between items-center">
                   <p className="text-gray-500">Points</p>
@@ -233,9 +300,9 @@ const AddCodingPage = () => {
                 <hr className="my-4 h-px bg-gray-300 border-0" />
                 <button
                   type="submit"
-                  className="flex flex-row items-center justify-center gap-2 cursor-pointer  p-2 rounded-2xl bg-blue-600 text-white hover:bg-blue-800 transition-all duration-150"
+                  className="flex flex-row items-center justify-center gap-2 cursor-pointer  p-2 rounded-2xl bg-indigo-600 text-white hover:bg-indigo-800 transition-all duration-150"
                 >
-                  {loading? "Creating....":"Create Chalanges"}
+                  {loading ? "Updating...." : "Updating Chalanges"}
                 </button>
               </div>
             </div>
@@ -293,7 +360,7 @@ const AddCodingPage = () => {
             </div>
           </div>
           <div className="mt-4 rounded-2xl p-4 bg-white">
-            <div style={{ scrollMarginTop: '0px' }}>
+            <div style={{ scrollMarginTop: "0px" }}>
               <CodeEditor
                 language={formData.AnswerLanguage || "javascript"}
                 value={formData.AnswerCode}
@@ -318,4 +385,4 @@ const AddCodingPage = () => {
   );
 };
 
-export default AddCodingPage;
+export default UpdateCodingProblem;

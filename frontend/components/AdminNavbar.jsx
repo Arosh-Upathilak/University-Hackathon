@@ -43,7 +43,6 @@ const AdminNavbar = ({ children }) => {
     { icon: MdDashboard, label: "Dashboard", href: "/admin" },
     { icon: IoTrophySharp, label: "Competitions", href: "/admin/competitions" },
     { icon: IoPeopleSharp, label: "Participants", href: "/admin/participants" },
-    { icon: FaGraduationCap, label: "Mentor", href: "/admin/mentor" },
   ];
 
   const currentMenu =

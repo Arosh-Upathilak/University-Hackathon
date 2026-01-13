@@ -65,7 +65,7 @@ export type CompetitionCartProps = {
 export type RichTextEditorProps = {
   placeholder: string;
   value?: string;
-  onChange: (content: string) => void;
+  onChange?: (content: string) => void;
 };
 
 export type BackButtonProps = {
@@ -95,8 +95,8 @@ export type TestCaseProps = {
     Output: string;
     IsHidden: boolean;
   };
-  removeTestCase: (id: number) => void;
-  updateTestCase: (
+  removeTestCase?: (id: number) => void;
+  updateTestCase?: (
     id: number,
     field: "Input" | "Output" | "IsHidden",
     value: string | boolean
@@ -113,13 +113,14 @@ export type LanguageSelectorProps = {
 export type CodeEditorProps = {
   value: string;
   language?: string;
-  onChange: (value: string) => void;
+  onChange?: (value: string) => void;
   onLanguageChange?: (language: string) => void;
 };
 
 export interface PopUpMessageProps {
   onClose: () => void;
-  deleteCompetitionId: number;
+  deleteCompetitionId?: number;
+  onConfirm?: () => void;
 }
 
 
@@ -130,7 +131,6 @@ export interface CompetitionProps {
   competitionTagLine: string;
   competitionDescription: string;
   competitionImageLink: string;
-
   startDateTime: string;
   endDateTime: string;
   registrationEndDateTime: string;
@@ -156,4 +156,31 @@ export interface CompetitionProblem {
   title: string;
   difficultyLevel: string;
   totalPoints: number;
+}
+
+export interface CodingProblemProps {
+  competitionProblemId: number;
+  title: string;
+  problemDescription: string;
+  totalPoints: number;
+  difficultyLevel: string;
+  sampleInput: string;
+  sampleOutput: string;
+  testCases?: TestCase[];
+}
+
+export interface TestCase {
+  testCaseId: number;
+  input: string;
+  expectedOutput: string;
+  isHidden: boolean;
+}
+
+
+export interface CompetitionRegistration {
+  competitionRegistrationId: number;
+  studentId: string;
+  studentName: string;
+  competitionId: number;
+  registeredAt: string;
 }

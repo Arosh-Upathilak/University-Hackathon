@@ -33,7 +33,7 @@ namespace backend.Data
             builder.Entity<TestCase>()
                 .HasOne(t => t.CompetitionProblem)
                 .WithMany(p => p.TestCases)
-                .HasForeignKey(t => t.CompetitionProblemId);
+                .HasForeignKey(t => new { t.CompetitionId, t.CompetitionProblemId });
 
             builder.Entity<QuestionCodeSubmission>()
                 .HasOne(s => s.Student)
