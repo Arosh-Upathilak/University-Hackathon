@@ -1,26 +1,27 @@
 "use client";
-import React, { useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import Input from "@/components/Input";
-import Button from "@/components/Button";
-import { useContext } from "react";
-import { useRouter } from "next/navigation";
-import { UserContext } from "@/context/userContext";
+import React, { useContext, useState } from "react";
 import { HiOutlineMail } from "react-icons/hi";
 import { IoIosLock } from "react-icons/io";
 import { FaRegEye, FaRegEyeSlash } from "react-icons/fa";
+import Input from "@/components/Input";
+import Image from "next/image";
+import Link from "next/link";
+import Button from "@/components/Button";
+import { IoPeopleSharp } from "react-icons/io5";
+import { UserContext } from "@/context/userContext";
 import axios, { AxiosError } from "axios";
 import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
-const LoginPage = () => {
+const RegisterPage = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [user, setUser] = useState({
+    UserName: "",
     email: "",
     password: "",
   });
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { url, setUser: setContextUser } = useContext(UserContext);
   const router = useRouter();
 
@@ -33,47 +34,44 @@ const LoginPage = () => {
     }));
   };
 
-
-const onSubmitHandler = async (e: React.FormEvent) => {
-  e.preventDefault();
-
-  if (!user.email || !user.password) {
-    setError("Please fill in all fields");
-    return;
-  }
-
-  setLoading(true);
-
-  try {
-    const response = await axios.post(`${url}/User/Login`, user);
-
-    localStorage.setItem("token", response.data.token);
-    localStorage.setItem("user", JSON.stringify(response.data.user));
-    setContextUser(response.data.user);
-
-    toast.success(response.data.message);
-
-    if (response.data.user?.role === "Admin") {
-      router.push("/admin");
-    } else if (response.data.user?.role === "User") {
-      router.push("/user");
-    } else {
-      router.push("/");
+  const onSubmitHandler = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user.UserName || !user.email || !user.password) {
+      setError("Fill all the inputs");
+      return;
     }
+    setLoading(true);
+    try {
+      const response = await axios.post(`${url}/User/Register`, user);
+      localStorage.setItem("token", response.data.token);
+      localStorage.setItem("user", JSON.stringify(response.data.user));
+      setContextUser(response.data.user);
+      toast.success(response.data.message);
+      setError(null);
 
-  } catch (err: unknown) {
-    const axiosError = err as AxiosError<{ message?: string; error?: string }>;
-    const errorMessage = axiosError.response?.data?.message ||
-      axiosError.response?.data?.error ||
-      axiosError.message ||
-      "Login failed";
+      if (response.data.user?.role === "Admin") {
+        router.push("/admin");
+      } else if (response.data.user?.role === "User") {
+        router.push("/user");
+      } else {
+        router.push("/");
+      }
+    } catch (err: unknown) {
+      const axiosError = err as AxiosError<{
+        message?: string;
+        error?: string;
+      }>;
+      const errorMessage =
+        axiosError.response?.data?.message ||
+        axiosError.response?.data?.error ||
+        axiosError.message ||
+        "Register failed";
 
-    toast.error(errorMessage);
-
-  } finally {
-    setLoading(false);
-  }
-};
+      toast.error(errorMessage);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="w-full min-h-screen flex justify-center items-center p-12">
@@ -105,16 +103,26 @@ const onSubmitHandler = async (e: React.FormEvent) => {
         </div>
 
         <div className="flex flex-col justify-center px-6 py-10 md:px-16">
-          <h1 className="text-3xl font-bold">Welcome back, Coder</h1>
+          <h1 className="text-3xl font-bold">Create an Account</h1>
 
           <p className="text-base text-slate-700 mt-4">
-            Please enter your details to sign in.
+            Join the ultimate coding competition. Build. code. and compete.
           </p>
 
           <form
             className="w-full mt-6 flex flex-col gap-4"
             onSubmit={onSubmitHandler}
           >
+            <Input
+              labelText="Full Name"
+              name="UserName"
+              type="name"
+              leftIcon={IoPeopleSharp}
+              placeholder="Enter your name"
+              value={user.UserName}
+              onChange={onChangeHandler}
+            />
+
             <Input
               labelText="University Email Address"
               name="email"
@@ -139,18 +147,12 @@ const onSubmitHandler = async (e: React.FormEvent) => {
             <p>
               {error && <span className="text-base text-red-500">{error}</span>}
             </p>
-            <p className="flex justify-end">
-              <Link href="/forgetpassword" className="link_class">
-                Forgot password?
-              </Link>
-            </p>
-
             <Button text="Submit" type="submit" loading={loading} />
           </form>
           <p className="mt-4 flex gap-4 justify-center">
-            New Here?&nbsp;
-            <Link href="/register" className="link_class">
-              Register for Hackathon
+            Already have an account
+            <Link href="/" className="link_class">
+              Login
             </Link>
           </p>
         </div>
@@ -159,4 +161,4 @@ const onSubmitHandler = async (e: React.FormEvent) => {
   );
 };
 
-export default LoginPage;
+export default RegisterPage;

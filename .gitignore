@@ -704,7 +704,7 @@ FodyWeavers.xsd
 
 # frontend
 
-
 # backend
 backend/backend/appsettings.json
 backend/backend/appsettings.Development.json
+backend/backend/Data/Migrations
