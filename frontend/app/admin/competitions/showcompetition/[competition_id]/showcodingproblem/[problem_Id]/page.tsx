@@ -224,6 +224,8 @@ const ShowCodingProblem = () => {
                       index={index}
                       key={index}
                       item={item}
+                      removeTestCase={()=>("")}
+                      updateTestCase={()=>("")}
                     />
                   );
                 })}

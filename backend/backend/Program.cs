@@ -19,7 +19,12 @@ builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(connStri
 builder.Services.Configure<EmailSettings>(
     builder.Configuration.GetSection("EmailSettings"));
 
+builder.Services.Configure<CloudinarySettings>(
+    builder.Configuration.GetSection("Cloudinary"));
+
+
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 
 
 builder.Services.AddIdentity<User, IdentityRole>(options =>

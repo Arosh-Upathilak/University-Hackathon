@@ -95,8 +95,8 @@ export type TestCaseProps = {
     Output: string;
     IsHidden: boolean;
   };
-  removeTestCase?: (id: number) => void;
-  updateTestCase?: (
+  removeTestCase: (id: number) => void;
+  updateTestCase: (
     id: number,
     field: "Input" | "Output" | "IsHidden",
     value: string | boolean
@@ -120,6 +120,7 @@ export type CodeEditorProps = {
 export interface PopUpMessageProps {
   onClose: () => void;
   deleteCompetitionId?: number;
+  deleteImageUrl?:string;
   onConfirm?: () => void;
 }
 

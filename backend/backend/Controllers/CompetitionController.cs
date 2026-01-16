@@ -1,9 +1,11 @@
 using System.Security.Claims;
 using backend.Dtos.CompetitionDtos;
 using backend.Models;
+using backend.Service;
 using backend.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
 
 namespace backend.Controllers
 {
@@ -12,9 +14,11 @@ namespace backend.Controllers
     public class CompetitionController : ControllerBase
     {
         private readonly ICompetitionRepository _icompetitionrepository;
-        public CompetitionController(ICompetitionRepository icompetitionrepository)
+        private readonly ICloudinaryService _icloudinaryservice ;
+        public CompetitionController(ICompetitionRepository icompetitionrepository,ICloudinaryService icloudinaryservice)
         {
             _icompetitionrepository = icompetitionrepository;
+            _icloudinaryservice = icloudinaryservice;
         }
 
         [Authorize(Roles = "Admin")]
@@ -60,6 +64,12 @@ namespace backend.Controllers
             var competition = await _icompetitionrepository.GetCompetitionById(id);
             if (competition == null) return NotFound();
 
+            string oldLink = competition.CompetitionImageLink;
+
+            if ( !string.IsNullOrWhiteSpace(oldLink) && oldLink != updateCompetitionDto.CompetitionImageLink){
+                await _icloudinaryservice.DeleteCloudinaryImage(competition.CompetitionImageLink); 
+            }
+
             competition.CompetitionName = updateCompetitionDto.CompetitionName;
             competition.CompetitionTagLine = updateCompetitionDto.CompetitionTagLine;
             competition.CompetitionDescription = updateCompetitionDto.CompetitionDescription;
@@ -86,7 +96,7 @@ namespace backend.Controllers
         {
             var competition = await _icompetitionrepository.GetCompetitionById(id);
             if (competition == null) return NotFound();
-
+            
             await _icompetitionrepository.DeleteCompetition(competition);
 
             return Ok(new
