@@ -6,8 +6,12 @@ import { useRouter } from "next/navigation";
 import React, { useContext, useState } from "react";
 import toast from "react-hot-toast";
 
-
-const PopUpMessage = ({ onClose, deleteCompetitionId, onConfirm }: PopUpMessageProps) => {
+const PopUpMessage = ({
+  onClose,
+  deleteCompetitionId,
+  deleteImageUrl,
+  onConfirm,
+}: PopUpMessageProps) => {
   const { url } = useContext(UserContext);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -17,15 +21,18 @@ const PopUpMessage = ({ onClose, deleteCompetitionId, onConfirm }: PopUpMessageP
       onConfirm();
       return;
     }
-    
+
     try {
       setLoading(true);
       const token = localStorage.getItem("token");
-      const response = await axios.delete(`${url}/Competition/DeleteCompetition/${deleteCompetitionId}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`
+      const response = await axios.delete(
+        `${url}/Competition/DeleteCompetition/${deleteCompetitionId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
-      });
+      );
       if (response.data.success) {
         onClose();
         setLoading(false);

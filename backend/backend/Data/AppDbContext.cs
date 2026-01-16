@@ -20,10 +20,13 @@ namespace backend.Data
             base.OnModelCreating(builder);
 
             builder.Entity<Competition>()
-                .HasOne(c => c.CreatedByUser)
-                .WithMany()
-                .HasForeignKey(c => c.CreatedByUserId)
-                .OnDelete(DeleteBehavior.Restrict);
+        .HasOne(c => c.CreatedByUser)
+        .WithMany()
+        .HasForeignKey(c => c.CreatedByUserId)
+        .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<CompetitionProblem>()
+                .HasKey(p => new { p.CompetitionId, p.CompetitionProblemId });
 
             builder.Entity<CompetitionProblem>()
                 .HasOne(p => p.Competition)
@@ -36,9 +39,14 @@ namespace backend.Data
                 .HasForeignKey(t => new { t.CompetitionId, t.CompetitionProblemId });
 
             builder.Entity<QuestionCodeSubmission>()
-                .HasOne(s => s.Student)
+                .HasOne(q => q.CompetitionProblem)
                 .WithMany()
-                .HasForeignKey(s => s.StudentId)
+                .HasForeignKey(q => new { q.CompetitionId, q.CompetitionProblemId });
+
+            builder.Entity<QuestionCodeSubmission>()
+                .HasOne(q => q.Student)
+                .WithMany()
+                .HasForeignKey(q => q.StudentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             builder.Entity<CompetitionRegistration>()

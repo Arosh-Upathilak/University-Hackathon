@@ -9,6 +9,7 @@ namespace backend.Models
     {
         public int CompetitionId { get; set; }
         public int CompetitionProblemId { get; set; }
+        public Competition Competition { get; set; } = null!;
 
         public string Title { get; set; } = string.Empty;
         public ChallengeDifficultyLevel DifficultyLevel { get; set; }

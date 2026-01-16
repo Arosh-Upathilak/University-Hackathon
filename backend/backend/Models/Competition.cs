@@ -7,6 +7,7 @@ namespace backend.Models
         public int CompetitionId { get; set; }
         [Required]
         public string CreatedByUserId { get; set; } = string.Empty;
+        public User CreatedByUser { get; set; } = null!;
         public string CompetitionName { get; set; } = string.Empty;
         public string CompetitionTagLine { get; set; } = string.Empty;
         public string CompetitionDescription { get; set; } = string.Empty;

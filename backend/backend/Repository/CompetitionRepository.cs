@@ -1,5 +1,6 @@
 using backend.Data;
 using backend.Models;
+using backend.Service;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -8,9 +9,11 @@ namespace backend.Repository
     public class CompetitionRepository: ICompetitionRepository
     {
         private readonly AppDbContext _context;
-        public CompetitionRepository(AppDbContext context)
+        private readonly ICloudinaryService _icloudinaryservice ;
+        public CompetitionRepository(AppDbContext context,ICloudinaryService icloudinaryservice)
         {
             _context = context;
+            _icloudinaryservice = icloudinaryservice;
         }
 
         public async Task<Competition> CreateCompetition(Competition competition)
@@ -34,6 +37,7 @@ namespace backend.Repository
 
         public async Task DeleteCompetition(Competition competition)
         {
+            await _icloudinaryservice.DeleteCloudinaryImage(competition.CompetitionImageLink);
             _context.Competitions.Remove(competition);
             await _context.SaveChangesAsync();
         }

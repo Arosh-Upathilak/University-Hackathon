@@ -71,7 +71,7 @@ const AdminCompetiotionCart = ({
         </button>
       </div>
       {showDeletePopup && (
-        <PopUpMessage onClose={() => setShowDeletePopup(false)} deleteCompetitionId={competition.competitionId}/>
+        <PopUpMessage onClose={() => setShowDeletePopup(false)} deleteCompetitionId={competition.competitionId} deleteImageUrl={competition.competitionImageLink}/>
       )}
     </div>
   );
