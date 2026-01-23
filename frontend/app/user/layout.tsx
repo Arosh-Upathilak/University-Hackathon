@@ -1,6 +1,7 @@
 "use client";
-import React from 'react';
-import PrivateRouter from '@/components/PrivateRouter';
+import React from "react";
+import PrivateRouter from "@/components/PrivateRouter";
+import NavBar from "@/components/Navbar/DesktopNavBar";
 
 export default function UserLayout({
   children,
@@ -9,11 +10,8 @@ export default function UserLayout({
 }) {
   return (
     <PrivateRouter allowedRoles={["User"]}>
-      <div className="min-h-screen flex flex-col">
-        <main className="flex-1">
-          {children}
-        </main>
-      </div>
+      <NavBar />
+      <div className="overflow-hidden">{children}</div>
     </PrivateRouter>
   );
 }

@@ -122,7 +122,7 @@ const AdminNavbar = ({ children }) => {
             <button
               onClick={handleLogout}
               title={!isOpen ? "Logout" : ""}
-              className={`flex items-center gap-3 p-2 rounded-md transition 
+              className={`flex items-center gap-3 p-2 rounded-md transition cursor-pointer
                 bg-blue-600 text-white hover:bg-blue-800 w-full
                 ${!isOpen && "justify-center"}
               `}

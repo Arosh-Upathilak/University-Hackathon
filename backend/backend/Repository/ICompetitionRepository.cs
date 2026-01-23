@@ -9,5 +9,7 @@ namespace backend.Repository
         Task<Competition> UpdateCompetition(Competition competition);
         Task DeleteCompetition(Competition competition);
         Task<List<Competition>> GetAllCompetitions();
+        Task<List<Competition>> GetUserAllCompetitions();
+
     }
 }

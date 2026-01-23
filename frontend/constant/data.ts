@@ -169,3 +169,23 @@ export const studentsDummy = [
     "registeredAt": "2025-12-23T19:30:00Z"
   }
 ]
+
+
+
+export const navBarLink = [
+  {
+    id:1,
+    name:"Competitions",
+    link:"/user"
+  },
+  {
+    id:2,
+    name:"My Compeitions",
+    link:"/user/mycompetition"
+  },
+  {
+    id:1,
+    name:"Resource",
+    link:"/user/resource"
+  }
+]

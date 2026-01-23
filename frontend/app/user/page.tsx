@@ -1,34 +1,52 @@
 "use client";
+import CompetitionCartUser from "@/components/CompetitionCartUser";
+import { CompetitionCartProps, CompetitionProps } from "@/constant/Type";
 import { UserContext } from "@/context/userContext";
-import React, { useContext } from "react";
+import axios from "axios";
+import React, { useContext, useEffect, useState } from "react";
 
 const UserHome = () => {
-  const { user, loading,handleLogout} = useContext(UserContext);
+  const [competition, setCompetition] = useState<CompetitionCartProps[]>([]);
+  const { url } = useContext(UserContext);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    const getCompetitions = async () => {
+      try {
+        setLoading(true);
+        const token = localStorage.getItem("token");
+        const result = await axios.get(
+          `${url}/Competition/GetUserCompetitions`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+        setCompetition(result.data.competitions || []);
+        setLoading(false);
+        console.log(result.data.competitions);
+        console.log(competition);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    getCompetitions();
+  }, []);
 
   return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold mb-8">User Dashboard</h1>
-      
-      {loading ? (
-        <div className="flex justify-center items-center h-64">
-          <div>Loading user data...</div>
+    <div className="mt-[12vh] p-8 ">
+      {!loading ? (
+        <div className="grid grid-cols-4 gap-6">
+          {competition.map((competition, index: number) => (
+            <CompetitionCartUser key={index} competition={competition as any} />
+          ))}
         </div>
       ) : (
-        <div className="bg-white p-6 rounded-lg shadow">
-          <h2 className="text-xl mb-4">Welcome, User!</h2>
-          <p>ID: {user?.id}</p>
-          <p>Email: {user?.email}</p>
-          <p>Username: {user?.userName}</p>
-          <p>Role: {user?.role}</p>
-        </div>
+        <div>Loading....</div>
       )}
-
-      <button 
-            onClick={handleLogout}
-            className="bg-red-500 px-3 py-1 rounded hover:bg-red-600"
-          >
-            Logout
-          </button>
     </div>
   );
 };
