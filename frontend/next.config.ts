@@ -7,7 +7,7 @@ const nextConfig = {
         hostname: "images.unsplash.com",
       },
     ],
-    domains: ["res.cloudinary.com"],
+    domains: ["res.cloudinary.com", "picsum.photos"],
   },
 };
 

@@ -185,3 +185,26 @@ export interface CompetitionRegistration {
   competitionId: number;
   registeredAt: string;
 }
+
+
+export interface LogoutProps {
+  showLogOut : boolean;
+  setShowLogOut : (showLogOut:boolean)=> void;
+} 
+
+
+export interface MobileNavBarProps{
+  showMobileNavBar: boolean;
+  setShowMobileNavBar: (showMobileNavBar:boolean)=>void;
+}
+
+
+export interface CompetitionCartUserProps{
+  competition : CompetitionProps
+}
+
+export interface StatusCompenentProps{
+  registrationEndDate :Date | string;
+  startDate :Date | string;
+  endDate :Date | string;
+}

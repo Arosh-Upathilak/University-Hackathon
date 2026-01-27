@@ -106,7 +106,7 @@ namespace backend.Controllers
             });
         }
 
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpGet("GetAllCompetitions")]
         public async Task<IActionResult> GetAllCompetitions()
         {
@@ -130,6 +130,17 @@ namespace backend.Controllers
             {
                 success = true,
                 competition = competition
+            });
+        }
+
+        [Authorize(Roles = "User")]
+        [HttpGet("GetUserCompetitions")]
+        public async Task<IActionResult> GetUserCompetitions()
+        {
+            var competitions = await _icompetitionrepository.GetUserAllCompetitions();
+            return Ok(new{
+                success = true,
+                competitions = competitions
             });
         }
     }

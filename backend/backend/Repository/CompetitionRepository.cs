@@ -46,5 +46,10 @@ namespace backend.Repository
         {
             return await _context.Competitions.ToListAsync();
         }
+
+        public async Task<List<Competition>> GetUserAllCompetitions()
+        {
+            return await _context.Competitions.Where(x => x.IsVisibleForStudents == true).ToListAsync();
+        }
     }
 }
