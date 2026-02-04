@@ -87,11 +87,6 @@ dotnet build     # Build the project
 dotnet test      # Run tests (if available)
 ```
 
-## 🌐 API Documentation
-
-When the backend is running, you can access the API documentation at:
-- Swagger UI: `https://localhost:5001/swagger`
-
 ## 🔧 Development
 
 ### Frontend Development
