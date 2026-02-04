@@ -1,11 +1,10 @@
 using System.Security.Claims;
 using backend.Dtos.CompetitionDtos;
 using backend.Models;
-using backend.Service;
-using backend.Repository;
+using backend.Service.CloudinaryService;
+using backend.Repository.CompetitionRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Options;
 
 namespace backend.Controllers
 {
@@ -137,7 +136,8 @@ namespace backend.Controllers
         [HttpGet("GetUserCompetitions")]
         public async Task<IActionResult> GetUserCompetitions()
         {
-            var competitions = await _icompetitionrepository.GetUserAllCompetitions();
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier); 
+            var competitions = await _icompetitionrepository.GetUserAllCompetitions(userId);
             return Ok(new{
                 success = true,
                 competitions = competitions

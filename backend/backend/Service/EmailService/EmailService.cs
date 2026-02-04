@@ -3,7 +3,7 @@ using System.Net.Mail;
 using Microsoft.Extensions.Options;
 using backend.Models;
 
-namespace backend.Service
+namespace backend.Service.EmailService
 {
     public class EmailService : IEmailService
     {

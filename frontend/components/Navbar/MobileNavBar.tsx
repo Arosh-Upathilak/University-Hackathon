@@ -1,19 +1,21 @@
 import { navBarLink } from "@/constant/data";
 import { MobileNavBarProps } from "@/constant/Type";
 import Link from "next/link";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { RxCross2 } from "react-icons/rx";
 import { CgProfile } from "react-icons/cg";
 import { IoIosLogOut } from "react-icons/io";
 import { UserContext } from "@/context/userContext";
+import { usePathname } from "next/navigation";
 
 function MobileNavBar({
   showMobileNavBar,
   setShowMobileNavBar,
 }: MobileNavBarProps) {
   const openNavBar = showMobileNavBar ? "translate-x-0" : "translate-x-[100%]";
-  const {  handleLogout } = useContext(UserContext);
-  
+  const { handleLogout } = useContext(UserContext);
+  const pathname = usePathname();
+
   return (
     <>
       <div
@@ -32,7 +34,9 @@ function MobileNavBar({
                   <Link
                     key={index}
                     href={item.link}
-                    className="cursor-pointer hover:text-black/50 transition-all duration-200 text-lg"
+                    className={`cursor-pointer ${
+                      pathname === item.link ? "font-bold " : ""
+                    } hover:text-black/50 transition-all duration-200`}
                   >
                     {item.name}
                   </Link>
@@ -47,7 +51,7 @@ function MobileNavBar({
               &nbsp;See the Profile
             </Link>
             <button className="links text-xl" onClick={handleLogout}>
-              <IoIosLogOut size={25}/>
+              <IoIosLogOut size={25} />
               &nbsp;LogOut
             </button>
           </div>

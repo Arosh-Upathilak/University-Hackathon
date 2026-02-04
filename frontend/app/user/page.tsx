@@ -9,8 +9,13 @@ const UserHome = () => {
   const [competition, setCompetition] = useState<CompetitionCartProps[]>([]);
   const { url } = useContext(UserContext);
   const [loading, setLoading] = useState<boolean>(false);
+  const [userName,setUserName] = useState<string>("");
+  const [searchText,setSearchText] = useState<string>("");
 
   useEffect(() => {
+    const userString = localStorage.getItem("user");
+    const user = userString? JSON.parse(userString) : null;
+    setUserName(user.userName)
     const getCompetitions = async () => {
       try {
         setLoading(true);
@@ -25,10 +30,9 @@ const UserHome = () => {
         );
         setCompetition(result.data.competitions || []);
         setLoading(false);
-        console.log(result.data.competitions);
-        console.log(competition);
+
       } catch (error) {
-        console.log(error);
+        console.error(error);
       } finally {
         setLoading(false);
       }
@@ -36,13 +40,27 @@ const UserHome = () => {
     getCompetitions();
   }, []);
 
+  const filtercompetitions = competition.filter((item)=>{
+    const search = searchText.toLowerCase();
+    return item.competitionName.toLowerCase().includes(search) || "";
+  })
+
   return (
     <div className="mt-[12vh] p-8 ">
+      <h1 className="mb-4">Ready to code {userName}</h1>
+      
+      <div className="my-4 p-3 bg-white rounded-2xl max-w-[40%] text-xl">
+        <input
+          placeholder="Enter the compenttion Name"
+          className="border-none outline-0"
+          onChange={(e) => setSearchText(e.target.value)}
+        />
+      </div>
       {!loading ? (
-        <div className="grid grid-cols-4 gap-6">
-          {competition.map((competition, index: number) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          { filtercompetitions && filtercompetitions.length>0 ? filtercompetitions.map((competition, index: number) => (
             <CompetitionCartUser key={index} competition={competition as any} />
-          ))}
+          )): <p>No Competittions Avalable</p>}
         </div>
       ) : (
         <div>Loading....</div>

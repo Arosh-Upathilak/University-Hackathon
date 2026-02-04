@@ -5,11 +5,11 @@ export const difficultyToNumber = (
 ): number => {
   switch (level) {
     case ChallengeDifficultyLevel.Easy:
-      return 1;
+      return 0;
     case ChallengeDifficultyLevel.Medium:
-      return 2;
+      return 1;
     case ChallengeDifficultyLevel.Hard:
-      return 3;
+      return 2;
     default:
       return 0;
   }
@@ -20,11 +20,11 @@ export const numberToDifficulty = (
   value: number
 ): ChallengeDifficultyLevel => {
   switch (value) {
-    case 1:
+    case 0:
       return ChallengeDifficultyLevel.Easy;
-    case 2:
+    case 1:
       return ChallengeDifficultyLevel.Medium;
-    case 3:
+    case 2:
       return ChallengeDifficultyLevel.Hard;
     default:
       return ChallengeDifficultyLevel.Easy;

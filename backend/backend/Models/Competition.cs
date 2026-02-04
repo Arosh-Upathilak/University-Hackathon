@@ -17,6 +17,7 @@ namespace backend.Models
         public DateTime RegistrationEndDateTime { get; set; }
         public bool IsVisibleForStudents { get; set; }
         public int NumberOfQuestions { get; set; }
+        public int RegisterStudents {get; set;}
         public string Rules { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public ICollection<CompetitionProblem> Problems { get; set; } = new List<CompetitionProblem>();

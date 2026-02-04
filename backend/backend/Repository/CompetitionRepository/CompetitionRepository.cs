@@ -1,16 +1,16 @@
 using backend.Data;
 using backend.Models;
-using backend.Service;
+using backend.Service.CloudinaryService;
 using Microsoft.EntityFrameworkCore;
 
 
-namespace backend.Repository
+namespace backend.Repository.CompetitionRepository
 {
-    public class CompetitionRepository: ICompetitionRepository
+    public class CompetitionRepository : ICompetitionRepository
     {
         private readonly AppDbContext _context;
-        private readonly ICloudinaryService _icloudinaryservice ;
-        public CompetitionRepository(AppDbContext context,ICloudinaryService icloudinaryservice)
+        private readonly ICloudinaryService _icloudinaryservice;
+        public CompetitionRepository(AppDbContext context, ICloudinaryService icloudinaryservice)
         {
             _context = context;
             _icloudinaryservice = icloudinaryservice;
@@ -47,9 +47,13 @@ namespace backend.Repository
             return await _context.Competitions.ToListAsync();
         }
 
-        public async Task<List<Competition>> GetUserAllCompetitions()
+        public async Task<List<Competition>> GetUserAllCompetitions(string userId)
         {
-            return await _context.Competitions.Where(x => x.IsVisibleForStudents == true).ToListAsync();
+            return await _context.Competitions
+                .Where(c =>
+                        c.IsVisibleForStudents &&
+                        !c.Registrations.Any(r => r.StudentId == userId)
+                    ).ToListAsync();
         }
     }
 }

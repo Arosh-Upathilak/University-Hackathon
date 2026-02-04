@@ -50,7 +50,6 @@ const Updatecompetiotion = () => {
           }
         );
         const competition = result.data.competition || "";
-        console.log("Competition:", competition);
         setFormData({
           competitionName: competition.competitionName || "",
           competitionTagLine: competition.competitionTagLine || "",
@@ -73,7 +72,6 @@ const Updatecompetiotion = () => {
           axiosError.response?.data?.error ||
           axiosError.message ||
           "Failed to Fetch Competition.";
-        console.log("Submission failed:", errorMessage);
         setError(errorMessage);
       } finally {
         setLoading(false);
@@ -106,7 +104,6 @@ const Updatecompetiotion = () => {
       setLoading(true);
       let imageUrl = "";
       if (selectedImage) {
-        console.log("Uploading image:", selectedImage.name);
         imageUrl = await uploadFileToCloudinary(selectedImage);
       }
 
@@ -141,7 +138,6 @@ const Updatecompetiotion = () => {
         toast.success(response.data.message);
         router.push("/admin/competitions");
         setLoading(false);
-        console.log("FINAL PAYLOAD:", payload);
       }
     } catch (err: unknown) {
       const axiosError = err as AxiosError<{
@@ -154,7 +150,6 @@ const Updatecompetiotion = () => {
         axiosError.message ||
         "Failed to Update Competition.";
       toast.error(errorMessage);
-      console.log("Submission failed:", errorMessage);
     } finally {
       setLoading(false);
     }

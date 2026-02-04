@@ -23,7 +23,7 @@ function StatusComponent({
       setStateStyle("bg-[#DCFCE7] text-[#15803D] ")
     } else {
       setState("Finished");
-      setStateStyle("bg-[#F3F4F6] text-[#F3F4F6] ")
+      setStateStyle("bg-[#F3F4F6] text-[#000000] ")
     }
   }, []);
 

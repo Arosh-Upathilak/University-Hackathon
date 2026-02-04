@@ -16,6 +16,7 @@ namespace backend.Models
         public string Code { get; set; } = string.Empty;
         public string Language { get; set; } = string.Empty;
         public int Points { get; set; }
+        public int TOtalPoints { get; set; }
         public DateTime SubmittedAt { get; set; } = DateTime.UtcNow;
     }
 }

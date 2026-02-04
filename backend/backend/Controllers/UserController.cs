@@ -1,6 +1,7 @@
 using backend.Dtos.UserDtos;
 using backend.Models;
-using backend.Service;
+using backend.Service.EmailService;
+using backend.Service.UserService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

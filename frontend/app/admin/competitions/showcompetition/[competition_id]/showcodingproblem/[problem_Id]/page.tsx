@@ -37,7 +37,7 @@ const ShowCodingProblem = () => {
         IsHidden: false,
       },
     ],
-    AnswerLanguage: "javascript",
+    AnswerLanguage: "python",
     AnswerCode: "",
   });
 
@@ -51,7 +51,6 @@ const ShowCodingProblem = () => {
           },
         })
         const problems = response.data;
-        console.log(problems)
         
         setFormData({
           Title: problems.title || "",
@@ -64,7 +63,7 @@ const ShowCodingProblem = () => {
             Output: tc.output || "",
             IsHidden: tc.isHidden || false,
           })) || [],
-          AnswerLanguage: problems.answerLanguage || "javascript",
+          AnswerLanguage: problems.answerLanguage || "python",
           AnswerCode: problems.answerCode || "",
         });
       } catch (err: unknown) {
@@ -77,7 +76,7 @@ const ShowCodingProblem = () => {
           axiosError.response?.data?.error ||
           axiosError.message ||
           "Failed to Create Problem.";
-        console.log("Submission failed:", errorMessage);
+        console.error("Submission failed:", errorMessage);
         setError(errorMessage);
         toast.error(errorMessage);
       } finally {
@@ -97,7 +96,7 @@ const ShowCodingProblem = () => {
       />
       <div className="p-8">
         <div>
-          <h1 className="text-3xl font-bold">Create Coding Challenge</h1>
+          <h1 className="text-3xl font-bold">Show Coding Challenge</h1>
           <p>
             Design a new technical problem for the university hackathon. Define
             rules, languages. and test cases.
@@ -135,12 +134,12 @@ const ShowCodingProblem = () => {
                       required
                       disabled
                     >
-                      <option value={0} disabled>
+                      <option  disabled>
                         Select Difficalty Level
                       </option>
-                      <option value={1}>Easy</option>
-                      <option value={2}>Medium</option>
-                      <option value={3}>Hard</option>
+                      <option value={0}>Easy</option>
+                      <option value={1}>Medium</option>
+                      <option value={2}>Hard</option>
                     </select>
                   </div>
                 </div>
@@ -209,7 +208,7 @@ const ShowCodingProblem = () => {
               </div>
               <div className="flex items-center justify-end mt-2">
                 <button
-                  className="flex items-center p-2 cursor-pointer text-blue-600 hover:text-blue-800 transition-all duration-150"
+                  className="flex items-center p-2 cursor-pointer text-blue-600 pointer-events-none transition-all duration-150"
                   type="button"
                 >
                   <FaPlus size={20} />
@@ -226,6 +225,7 @@ const ShowCodingProblem = () => {
                       item={item}
                       removeTestCase={()=>("")}
                       updateTestCase={()=>("")}
+                      style="pointer-events-none"
                     />
                   );
                 })}
@@ -235,7 +235,8 @@ const ShowCodingProblem = () => {
           <div className="mt-4 rounded-2xl p-4 bg-white">
             <div style={{ scrollMarginTop: "0px" }}>
               <CodeEditor
-                language={formData.AnswerLanguage || "javascript"}
+              key={formData.AnswerLanguage || "python"}
+              language={formData.AnswerLanguage || "python"}
                 value={formData.AnswerCode}
                 onChange={() => {}}
                 onLanguageChange={() => {}}

@@ -49,7 +49,7 @@ const PopUpMessage = ({
         axiosError.response?.data?.error ||
         axiosError.message ||
         "Failed to Create Competition.";
-      console.log("Submission failed:", error);
+      console.error("Submission failed:", error);
       toast.error(errorMessage);
     } finally {
       setLoading(false);

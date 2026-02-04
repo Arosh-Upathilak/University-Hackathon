@@ -1,4 +1,4 @@
-namespace backend.Service
+namespace backend.Service.CloudinaryService
 {
     public interface ICloudinaryService
     {

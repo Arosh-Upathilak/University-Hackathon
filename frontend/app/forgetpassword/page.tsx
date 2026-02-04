@@ -33,7 +33,6 @@ const Forgetpassword = () => {
       const response = await axios.post(`${url}/User/Forgot-Password`, { email: userEmail });
       
       if(response.data.success){
-        console.log(response.data)
         toast.success(response.data.message)
         setError(null)
         setLoading(true)

@@ -14,7 +14,7 @@ function ShowLogOutBox({ showLogOut, setShowLogOut }: LogoutProps) {
   return (
     <>
       {showLogOut && (
-        <div className="fixed z-50 right-8 top-16 bg-black/15 p-4 rounded-xl flex flex-col gap-4">
+        <div className="fixed z-50 right-8 top-16 bg-white/85 p-4 rounded-xl flex flex-col gap-4">
           <div className="flex items-end justify-end w-full cursor-pointer hover:text-re">
             <RxCross2 onClick={() => setShowLogOut(false)} />
           </div>

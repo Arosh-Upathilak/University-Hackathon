@@ -6,20 +6,20 @@ import { CODE_SNIPPETS } from "@/constant/data";
 import Output from "./CodeEditor/Output";
 import { CodeEditorProps } from "@/constant/Type";
 
-const CodeEditor = ({ value, language = "javascript", onChange, onLanguageChange }: CodeEditorProps) => {
+const CodeEditor = ({
+  value,
+  language = "python",
+  onChange,
+  onLanguageChange,
+}: CodeEditorProps) => {
   const editorRef = useRef<{ getValue: () => string } | null>(null);
   const [currentLanguage, setCurrentLanguage] = useState(language);
 
   useEffect(() => {
-    if (!value) {
-      onChange(CODE_SNIPPETS["javascript"]);
-    }
-  }, []);
+    setCurrentLanguage(language);
+  }, [language]);
 
-  const onMount = (
-    editor: any,
-    monaco: any
-  ) => {
+  const onMount = (editor: any, monaco: any) => {
     editorRef.current = editor;
 
     monaco.editor.defineTheme("customLight", {
@@ -32,26 +32,22 @@ const CodeEditor = ({ value, language = "javascript", onChange, onLanguageChange
     });
 
     monaco.editor.setTheme("customLight");
-    
-    setTimeout(() => {
-      editor.setPosition({ lineNumber: 1, column: 1 });
-      editor.revealLine(1);
-    }, 100);
   };
 
   const onSelect = (lang: string) => {
     setCurrentLanguage(lang);
-    onChange(CODE_SNIPPETS[lang as keyof typeof CODE_SNIPPETS]);
-    if (onLanguageChange) {
-      onLanguageChange(lang);
-    }
+    onChange?.(CODE_SNIPPETS[lang as keyof typeof CODE_SNIPPETS]);
+    onLanguageChange?.(lang);
   };
 
   return (
     <div className="bg-white">
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
-          <LanguageSelector language={currentLanguage} onSelect={onSelect} />
+          <LanguageSelector
+            language={currentLanguage}
+            onSelect={onSelect}
+          />
 
           <div className="border border-gray-200 rounded-2xl overflow-hidden bg-[#f2f7fb]">
             <div className="p-2">
@@ -60,21 +56,18 @@ const CodeEditor = ({ value, language = "javascript", onChange, onLanguageChange
                 language={currentLanguage}
                 value={value}
                 onMount={onMount}
-                onChange={(val) => onChange(val ?? "")}
-                options={{ 
+                onChange={(val) => onChange?.(val ?? "")}
+                options={{
                   minimap: { enabled: false },
                   scrollBeyondLastLine: false,
-                  automaticLayout: true
+                  automaticLayout: true,
                 }}
               />
             </div>
           </div>
         </div>
 
-        <Output
-          editorRef={editorRef as { current: { getValue: () => string } }}
-          language={currentLanguage}
-        />
+        <Output editorRef={editorRef} language={currentLanguage} />
       </div>
     </div>
   );

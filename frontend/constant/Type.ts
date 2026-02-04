@@ -49,7 +49,7 @@ export type AdminCartProps = {
 
 export type CompetitionCartProps = {
   id: number;
-  name: string;
+  competitionName: string;
   header: string;
   image: string;
   status: "Live" | "Upcoming" | "Completed";
@@ -86,7 +86,6 @@ export enum ChallengeDifficultyLevel {
   Hard = "Hard",
 }
 
-
 export type TestCaseProps = {
   index: number;
   item: {
@@ -99,16 +98,15 @@ export type TestCaseProps = {
   updateTestCase: (
     id: number,
     field: "Input" | "Output" | "IsHidden",
-    value: string | boolean
+    value: string | boolean,
   ) => void;
+  style?: string;
 };
-
 
 export type LanguageSelectorProps = {
   language: string;
   onSelect: (lang: string) => void;
 };
-
 
 export type CodeEditorProps = {
   value: string;
@@ -120,10 +118,9 @@ export type CodeEditorProps = {
 export interface PopUpMessageProps {
   onClose: () => void;
   deleteCompetitionId?: number;
-  deleteImageUrl?:string;
+  deleteImageUrl?: string;
   onConfirm?: () => void;
 }
-
 
 export interface CompetitionProps {
   competitionId: number;
@@ -138,12 +135,12 @@ export interface CompetitionProps {
 
   isVisibleForStudents: boolean;
   numberOfQuestions: number;
-
+  registerStudents: number;
   rules: string;
   createdAt: string;
 
   problems?: CompetitionProblem[];
-  registrations? : CompetitionRegistration[];
+  registrations?: CompetitionRegistration[];
 }
 
 export interface CompetitionRegistration {
@@ -164,7 +161,7 @@ export interface CodingProblemProps {
   title: string;
   problemDescription: string;
   totalPoints: number;
-  difficultyLevel: string;
+  difficultyLevel: number;
   sampleInput: string;
   sampleOutput: string;
   testCases?: TestCase[];
@@ -177,7 +174,6 @@ export interface TestCase {
   isHidden: boolean;
 }
 
-
 export interface CompetitionRegistration {
   competitionRegistrationId: number;
   studentId: string;
@@ -186,25 +182,107 @@ export interface CompetitionRegistration {
   registeredAt: string;
 }
 
-
 export interface LogoutProps {
-  showLogOut : boolean;
-  setShowLogOut : (showLogOut:boolean)=> void;
-} 
+  showLogOut: boolean;
+  setShowLogOut: (showLogOut: boolean) => void;
+}
 
-
-export interface MobileNavBarProps{
+export interface MobileNavBarProps {
   showMobileNavBar: boolean;
-  setShowMobileNavBar: (showMobileNavBar:boolean)=>void;
+  setShowMobileNavBar: (showMobileNavBar: boolean) => void;
 }
 
-
-export interface CompetitionCartUserProps{
-  competition : CompetitionProps
+export interface CompetitionCartUserProps {
+  competition: CompetitionProps;
 }
 
-export interface StatusCompenentProps{
-  registrationEndDate :Date | string;
-  startDate :Date | string;
-  endDate :Date | string;
+export interface StatusCompenentProps {
+  registrationEndDate: Date | string;
+  startDate: Date | string;
+  endDate: Date | string;
+}
+
+export interface UserCompetitionCartButtonProps {
+  registrationEndDate: Date | string;
+  id: number;
+  name: string;
+}
+
+export interface CompetitionRegisterPopUpProps {
+  id: number;
+  name: string;
+  onClose: () => void;
+}
+
+export interface Competition {
+  competitionId: number;
+  createdByUserId: string;
+  createdByUser: any | null;
+
+  competitionName: string;
+  competitionTagLine: string;
+  competitionDescription: string;
+  competitionImageLink: string;
+
+  startDateTime: string;
+  endDateTime: string;
+  registrationEndDateTime: string;
+
+  isVisibleForStudents: boolean;
+  numberOfQuestions: number;
+  registerStudents: number;
+
+  rules: string;
+  createdAt: string;
+
+  problems: any[];
+  registrations: any[];
+}
+
+export interface ProgressBarProps {
+  style?: string;
+}
+
+export interface TestCaseProp {
+  testCaseId: number;
+  input: string;
+  output: string;
+  isHidden?: boolean;
+}
+
+export interface ProblemsProps {
+  competitionProblemId: number;
+  competitionId: number;
+
+  title: string;
+  description: string;
+
+  difficultyLevel: number;
+  totalPoints: number;
+
+  answerLanguage: string;
+  answerCode: string;
+
+  testCases: TestCaseProp[];
+}
+
+export type DifficultyLevelProps = {
+  levelNumber: number;
+};
+
+export type CodeSnippetProps = {
+  id: number;
+  language: "python" | "java" | "csharp";
+  displayName: string;
+  codeSnippet: string;
+};
+
+export type CodeSubmitProps = {
+  competiionId: number;
+  questionId: number;
+};
+
+export interface UserSubmitProps {
+  language: string;
+  sourceCode: string;
 }
