@@ -12,6 +12,8 @@ const Competitions = () => {
   const { url } = useContext(UserContext);
   const [competitions, setCompetitions] = useState<CompetitionProps[]>([]);
   const [loading, setLoading] = useState(false);
+  const [searchText, setSearchText] = useState<string>("");
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -23,7 +25,7 @@ const Competitions = () => {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         setCompetitions(result.data.competitions || []);
         setLoading(false);
@@ -37,13 +39,18 @@ const Competitions = () => {
           axiosError.response?.data?.error ||
           axiosError.message ||
           "Failed to Fetch Competitions.";
-        console.log("Submission failed:", errorMessage);
+        console.error("Submission failed:", errorMessage);
       } finally {
         setLoading(false);
       }
     };
     fetchData();
   }, []);
+
+  const filtercompetitions = competitions.filter((item) => {
+    const search = searchText.toLowerCase();
+    return item.competitionName.toLowerCase().includes(search) || "";
+  });
   return (
     <div className="p-8">
       <div className="flex items-center justify-between">
@@ -62,6 +69,7 @@ const Competitions = () => {
         <input
           placeholder="Enter the compenttion Name"
           className="border-none outline-0"
+          onChange={(e) => setSearchText(e.target.value)}
         />
       </div>
 
@@ -72,13 +80,15 @@ const Competitions = () => {
               Loading competitions...
             </div>
           </>
-        ) : (
-          competitions.map((competition, index: number) => (
+        ) : filtercompetitions && filtercompetitions.length>0 ? (
+          filtercompetitions.map((competition, index: number) => (
             <AdminCompetiotionCart
               key={index}
               competition={competition as CompetitionProps}
             />
           ))
+        ) : (
+          <p className="text-2xl">No Competitons</p>
         )}
       </div>
     </div>

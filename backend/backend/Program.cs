@@ -1,12 +1,17 @@
 using backend.Data;
 using backend.Models;
-using backend.Service;
+using backend.Service.CloudinaryService;
+using backend.Service.EmailService;
+using backend.Service.UserService;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
-using backend.Repository;
+using backend.Repository.CodingProblemsRepository;
+using backend.Repository.CompetitionRepository;
+using backend.Repository.UserRegistrationRepository;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -72,6 +77,8 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddScoped<ICompetitionRepository,CompetitionRepository>();
 builder.Services.AddScoped<ICodingProblemsRepository,CodingProblemsRepository>();
+builder.Services.AddScoped<IUserRregistrationRepository,UserRegistrationRepository>();
+
 
 // Add controllers
 builder.Services.AddAuthorization();

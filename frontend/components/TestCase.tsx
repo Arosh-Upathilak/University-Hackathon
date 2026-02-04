@@ -2,7 +2,7 @@ import { TestCaseProps } from "@/constant/Type";
 import React from "react";
 import { RiDeleteBinLine } from "react-icons/ri";
 
-const TestCase = ({ index,item, removeTestCase, updateTestCase }: TestCaseProps) => {
+const TestCase = ({ index,item, removeTestCase, updateTestCase,style }: TestCaseProps) => {
   return (
     <div className="p-4 bg-gray-200 rounded-2xl mb-4">
       <div className="flex items-start justify-between">
@@ -18,7 +18,7 @@ const TestCase = ({ index,item, removeTestCase, updateTestCase }: TestCaseProps)
             />
             <p>Hidden</p>
           </div>
-          <button onClick={() => removeTestCase(item.id)}>
+          <button onClick={() => removeTestCase(item.id)} className={`${style}`}>
             <RiDeleteBinLine
               size={20}
               className="cursor-pointer hover:text-black/50"
@@ -31,28 +31,34 @@ const TestCase = ({ index,item, removeTestCase, updateTestCase }: TestCaseProps)
           <label>
             Input <span className="text-red-600">*</span>
           </label>
-          <input
+          <textarea
             required
+            rows={1}
             placeholder="e.g. [1,2,3,4,5]"
-            className="p-2 bg-gray-100/50 rounded-2xl outline-0"
+            className="p-2 bg-gray-100/50 rounded-2xl outline-0 "
             value={item.Input}
-            onChange={(e) =>
+            onChange={(e) =>{
+              e.target.style.height = "auto";
+                e.target.style.height = `${e.target.scrollHeight}px`;
               updateTestCase(item.id, "Input", e.target.value)
-            }
+            }}
           />
         </div>
         <div className="bg-gray-300  p-4 rounded-2xl flex flex-col gap-3">
           <label>
             Expected Output <span className="text-red-600">*</span>
           </label>
-          <input
+          <textarea
             required
+            rows={1}
             placeholder="e.g. [1,2,3,4,5]"
             className="p-2 bg-gray-100/50 rounded-2xl outline-0"
             value={item.Output}
-            onChange={(e) =>
+            onChange={(e) =>{
+              e.target.style.height = "auto";
+                e.target.style.height = `${e.target.scrollHeight}px`;
               updateTestCase(item.id, "Output", e.target.value)
-            }
+            }}
           />
         </div>
       </div>

@@ -45,10 +45,10 @@ const AdminCompetiotionCart = ({
         </span>
       </div>
       <p>
-        Registered: {competition.registrations?.length}
+        Registered: {competition.registerStudents}
       </p>
       <p>
-        Questions: {competition.problems?.length}
+        Questions: {competition.numberOfQuestions}
       </p>
       <p>
         Stating Date: {DateTimeConfig(competition.startDateTime)}

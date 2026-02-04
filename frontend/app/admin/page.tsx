@@ -44,7 +44,7 @@ const AdminHome = () => {
           axiosError.response?.data?.error ||
           axiosError.message ||
           "Failed to Fetch Competitions.";
-        console.log("Submission failed:", errorMessage);
+        console.error("Submission failed:", errorMessage);
       } finally {
         setLoading(false);
       }

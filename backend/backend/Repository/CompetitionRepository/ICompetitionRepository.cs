@@ -1,6 +1,6 @@
 using backend.Models;
 
-namespace backend.Repository
+namespace backend.Repository.CompetitionRepository
 {
     public interface  ICompetitionRepository
     {
@@ -9,5 +9,7 @@ namespace backend.Repository
         Task<Competition> UpdateCompetition(Competition competition);
         Task DeleteCompetition(Competition competition);
         Task<List<Competition>> GetAllCompetitions();
+        Task<List<Competition>> GetUserAllCompetitions(string userId);
+
     }
 }

@@ -68,7 +68,6 @@ const ShowPage = () => {
             },
           }
         );
-        console.log(result1.data);
         setCompetition(result.data.competition || "");
         setCodingProblems(result1.data.problems || []);
         setLoading(false);
@@ -82,7 +81,7 @@ const ShowPage = () => {
           axiosError.response?.data?.error ||
           axiosError.message ||
           "Failed to Fetch Competition.";
-        console.log("Submission failed:", errorMessage);
+        console.error("Submission failed:", errorMessage);
       } finally {
         setLoading(false);
       }
@@ -93,7 +92,6 @@ const ShowPage = () => {
   const isEnded: boolean =
   !!competition?.endDateTime &&
   new Date(competition.endDateTime) < new Date();
-  console.log(isEnded);
 
   return (
     <div>

@@ -1,7 +1,8 @@
 using System.Security.Claims;
 using backend.Dtos.CodingProblemDtos;
 using backend.Models;
-using backend.Repository;
+using backend.Repository.CodingProblemsRepository;
+using backend.Repository.CompetitionRepository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -14,7 +15,7 @@ namespace backend.Controllers
     {
         private readonly ICodingProblemsRepository _codingProblemsRepository;
         private readonly ICompetitionRepository _icompetitionrepository;
-        public CodingProblemController(ICodingProblemsRepository codingProblemsRepository,ICompetitionRepository icompetitionrepository)
+        public CodingProblemController(ICodingProblemsRepository codingProblemsRepository, ICompetitionRepository icompetitionrepository)
         {
             _codingProblemsRepository = codingProblemsRepository;
             _icompetitionrepository = icompetitionrepository;
@@ -22,7 +23,7 @@ namespace backend.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost("{id}/CreateProblems")]
-        public async Task<IActionResult> CreateCodingProblems(int id,CreateCodingProblemsDto createCodingProblemsDto)
+        public async Task<IActionResult> CreateCodingProblems(int id, CreateCodingProblemsDto createCodingProblemsDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
@@ -55,38 +56,41 @@ namespace backend.Controllers
             });
         }
 
-        [Authorize(Roles ="Admin")]
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}/UpdateProblem/{problemId}")]
-        public async Task<IActionResult> UpdateProblem(int id,int problemId, UpdateCodingProblemsDto updateCodingProblemsDto)
+        public async Task<IActionResult> UpdateProblem(int id,int problemId,UpdateCodingProblemsDto updateCodingProblemsDto)
         {
-            if (!ModelState.IsValid) return BadRequest(ModelState);
-            
-            var existingProblem = await _codingProblemsRepository.GetCodingProblemsById(id, problemId);
-            if (existingProblem == null) return NotFound("Problem not found");
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
 
-            var problem = new CompetitionProblem
+            var existingProblem = await _codingProblemsRepository
+                .GetCodingProblemsByIdForUpdate(id, problemId);
+
+            if (existingProblem == null)
+                return NotFound("Problem not found");
+
+            existingProblem.Title = updateCodingProblemsDto.Title;
+            existingProblem.DifficultyLevel = updateCodingProblemsDto.DifficultyLevel;
+            existingProblem.TotalPoints = updateCodingProblemsDto.TotalPoints;
+            existingProblem.Description = updateCodingProblemsDto.Description;
+            existingProblem.AnswerCode = updateCodingProblemsDto.AnswerCode;
+            existingProblem.AnswerLanguage = updateCodingProblemsDto.AnswerLanguage;
+
+            _codingProblemsRepository.RemoveTestCases(existingProblem.TestCases);
+
+            existingProblem.TestCases = updateCodingProblemsDto.TestCases.Select(tc => new TestCase
             {
                 CompetitionId = id,
                 CompetitionProblemId = problemId,
-                Title = updateCodingProblemsDto.Title,
-                DifficultyLevel = updateCodingProblemsDto.DifficultyLevel,
-                TotalPoints = updateCodingProblemsDto.TotalPoints,
-                Description = updateCodingProblemsDto.Description,
-                AnswerCode = updateCodingProblemsDto.AnswerCode,
-                AnswerLanguage = updateCodingProblemsDto.AnswerLanguage,
-                TestCases = updateCodingProblemsDto.TestCases.Select(tc => new TestCase
-                {
-                    CompetitionId = id,
-                    CompetitionProblemId = problemId,
-                    Input = tc.Input,
-                    Output = tc.Output,
-                    IsHidden = tc.IsHidden
-                }).ToList()
-            };
+                Input = tc.Input,
+                Output = tc.Output,
+                IsHidden = tc.IsHidden
+            }).ToList();
 
-            var result = await _codingProblemsRepository.UpdateCodingProblems(problem);
+            var result = await _codingProblemsRepository.UpdateCodingProblems(existingProblem);
 
-            if (result == null) return BadRequest("Failed to update problem");
+            if (result == null)
+                return BadRequest("Failed to update problem");
 
             return Ok(new
             {
@@ -98,11 +102,11 @@ namespace backend.Controllers
 
         [Authorize]
         [HttpGet("{id}/GetProblems/{problemId}")]
-        public async Task<IActionResult> GetCodingProblems(int id,int problemId)
+        public async Task<IActionResult> GetCodingProblems(int id, int problemId)
         {
             var problems = await _codingProblemsRepository.GetCodingProblemsById(id, problemId);
-            
-            if(problems == null) return BadRequest("No problems found");
+
+            if (problems == null) return BadRequest("No problems found");
 
             return Ok(problems);
         }
@@ -112,7 +116,7 @@ namespace backend.Controllers
         public async Task<IActionResult> GetAllCodingProblems(int id)
         {
             var problems = await _codingProblemsRepository.GetAllCodingProblems(id);
-            
+
             return Ok(new
             {
                 success = true,
@@ -135,5 +139,9 @@ namespace backend.Controllers
                 message = "Problem deleted successfully"
             });
         }
+
+
+        //
+
     }
 }

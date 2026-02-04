@@ -57,7 +57,6 @@ const Createcompetition = () => {
       setLoading(true);
       let imageUrl = "";
       if (selectedImage) {
-        console.log("Uploading image:", selectedImage.name);
         imageUrl = await uploadFileToCloudinary(selectedImage);
       }
 
@@ -77,7 +76,6 @@ const Createcompetition = () => {
           },
         }
       );
-      console.log("API Response:", result.data);
       if (result.data.success) {
         setFormData({
           CompetitionName: "",
@@ -104,7 +102,7 @@ const Createcompetition = () => {
         axiosError.response?.data?.error ||
         axiosError.message ||
         "Failed to Create Competition.";
-      console.log("Submission failed:", error);
+      console.error("Submission failed:", error);
       toast.error(errorMessage);
     } finally {
       setLoading(false);

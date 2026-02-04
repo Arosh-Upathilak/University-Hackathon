@@ -44,7 +44,7 @@ const AddCodingPage = () => {
         IsHidden: false,
       },
     ],
-    AnswerLanguage: "javascript",
+    AnswerLanguage: "python",
     AnswerCode: "",
   });
 
@@ -86,7 +86,6 @@ const AddCodingPage = () => {
 
   const onSubmitHandler = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(formData);
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
@@ -111,7 +110,7 @@ const AddCodingPage = () => {
               IsHidden: false,
             },
           ],
-          AnswerLanguage: "javascript",
+          AnswerLanguage: "python",
           AnswerCode: "",
         });
         router.back();
@@ -126,7 +125,7 @@ const AddCodingPage = () => {
         axiosError.response?.data?.error ||
         axiosError.message ||
         "Failed to Create Problem.";
-      console.log("Submission failed:", errorMessage);
+      console.error("Submission failed:", errorMessage);
       setError(errorMessage);
       toast.error(errorMessage);
     } finally {
@@ -186,12 +185,12 @@ const AddCodingPage = () => {
                       value={formData.DifficultyLevel}
                       required
                     >
-                      <option value={0} disabled>
+                      <option disabled>
                         Select Difficalty Level
                       </option>
-                      <option value={1}>Easy</option>
-                      <option value={2}>Medium</option>
-                      <option value={3}>Hard</option>
+                      <option value={0}>Easy</option>
+                      <option value={1}>Medium</option>
+                      <option value={2}>Hard</option>
                     </select>
                   </div>
                 </div>
@@ -295,7 +294,7 @@ const AddCodingPage = () => {
           <div className="mt-4 rounded-2xl p-4 bg-white">
             <div style={{ scrollMarginTop: '0px' }}>
               <CodeEditor
-                language={formData.AnswerLanguage || "javascript"}
+                language={formData.AnswerLanguage || "python"}
                 value={formData.AnswerCode}
                 onChange={(code) =>
                   setFormData((prev) => ({

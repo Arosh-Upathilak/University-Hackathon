@@ -5,7 +5,7 @@ using CloudinaryDotNet.Actions;
 using Microsoft.Extensions.Options;
 
 
-namespace backend.Service
+namespace backend.Service.CloudinaryService
 {
     public class CloudinaryService : ICloudinaryService
     {

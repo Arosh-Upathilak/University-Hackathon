@@ -3,7 +3,7 @@ using System.Security.Claims;
 using backend.Models;
 using Microsoft.IdentityModel.Tokens;
 
-namespace backend.Service
+namespace backend.Service.UserService
 {
     public class UserService : IUserService
     {

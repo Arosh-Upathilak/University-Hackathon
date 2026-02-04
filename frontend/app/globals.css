@@ -78,3 +78,11 @@ ol li {
   float: left;
 }
 
+
+
+@layer components{
+  .links{
+    @apply cursor-pointer hover:text-black/30 transition-all duration-200 text-left flex flex-row items-center
+  }
+}
+
